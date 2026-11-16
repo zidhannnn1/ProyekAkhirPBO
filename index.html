@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Sampah Berkah Mandiri — Unit RT 04 / RW 02</title>
+  <style>
+    :root {
+      --slate-900: #0F172A;
+      --slate-800: #1E293B;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748B;
+      --slate-200: #E2E8F0;
+      --slate-100: #F1F5F9;
+      --slate-50:  #F8FAFC;
+      
+      --brand-dark:   #17382B;
+      --brand-base:   #1F4E3D;
+      --brand-subtle: #EDF4F0;
+      --brand-border: #BCD5C9;
+      
+      --amber-700: #B45309;
+      --amber-50:  #FFFBEB;
+      --amber-200: #FDE68A;
+      
+      --red-700:   #B91C1C;
+      --red-50:    #FEF2F2;
+      --red-200:   #FECACA;
+
+      --mono: "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: var(--sans);
+      background-color: var(--slate-100);
+      color: var(--slate-900);
+      line-height: 1.45;
+      font-size: 13.5px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Utility Bar */
+    .top-bar {
+      background-color: var(--slate-900);
+      color: #FFFFFF;
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--brand-base);
+    }
+    .unit-identity {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .unit-name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .unit-locality {
+      font-size: 12px;
+      color: #94A3B8;
+      font-weight: 400;
+    }
+    .session-badge {
+      font-size: 11px;
+      background: var(--brand-base);
+      color: #FFFFFF;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-family: var(--mono);
+      font-weight: 500;
+    }
+
+    /* App Nav */
+    nav {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--slate-200);
+      padding: 0 24px;
+      display: flex;
+      gap: 2px;
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 12px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-600);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      transition: all 0.1s ease;
+    }
+    .nav-tab:hover {
+      color: var(--brand-base);
+    }
+    .nav-tab.active {
+      color: var(--brand-base);
+      border-bottom-color: var(--brand-base);
+    }
+
+    /* Container Layout */
+    .content-area {
+      max-width: 1320px;
+      margin: 18px auto;
+      padding: 0 16px;
+    }
+
+    /* Metric Summary Bar */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .metric-box {
+      background: #FFFFFF;
+      border: 1px solid var(--slate-200);
+      border-radius: 4px;
+      padding: 12px 16px;
+    }
+    .metric-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--slate-500);
+      letter-spacing: 0.04em;
+    }
+    .metric-number {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-top: 2px;
+      font-family: var(--mono);
+      font-feature-settings: "tnum";
+    }
+
+    /* Two-column Cashier Workbench */
+    .cashier-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid var(--slate-200);
+      border-radius: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .card-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--slate-50);
+    }
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--slate-800);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .card-body {
+      padding: 18px;
+    }
+
+    /* Forms */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--slate-600);
+      margin-bottom: 5px;
+      letter-spacing: 0.02em;
+    }
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      height: 36px;
+      padding: 6px 10px;
+      border: 1px solid var(--slate-200);
+      border-radius: 3px;
+      font-size: 13px;
+      color: var(--slate-900);
+      background: #FFFFFF;
+      outline: none;
+      font-family: inherit;
+    }
+    select:focus, input:focus {
+      border-color: var(--brand-base);
+      box-shadow: 0 0 0 1px var(--brand-base);
+    }
+
+    /* Tally Table */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--slate-200);
+      text-align: left;
+    }
+    th {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--slate-500);
+      background: var(--slate-50);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    td.num, th.num {
+      text-align: right;
+      font-family: var(--mono);
+      font-feature-settings: "tnum";
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 3px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background 0.1s ease;
+    }
+    .btn-brand {
+      background: var(--brand-base);
+      color: #FFFFFF;
+    }
+    .btn-brand:hover {
+      background: var(--brand-dark);
+    }
+    .btn-outline {
+      background: #FFFFFF;
+      border-color: var(--slate-200);
+      color: var(--slate-700);
+    }
+    .btn-outline:hover {
+      background: var(--slate-100);
+    }
+    .btn-danger-link {
+      background: none;
+      border: none;
+      color: var(--red-700);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 6px;
+    }
+    .btn-danger-link:hover {
+      text-decoration: underline;
+    }
+    .btn-action-sm {
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Physical Slip Preview Style */
+    .slip-container {
+      background: #FAFAF9;
+      border: 1px solid #E7E5E4;
+      border-radius: 3px;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #292524;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    }
+    .slip-header {
+      text-align: center;
+      border-bottom: 1px dashed #A8A29E;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .slip-title {
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+    .slip-meta {
+      font-size: 11px;
+      color: #57534E;
+      margin-top: 2px;
+    }
+    .slip-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .slip-total-line {
+      border-top: 1px dashed #A8A29E;
+      margin-top: 8px;
+      padding-top: 8px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .slip-footer {
+      border-top: 1px dashed #A8A29E;
+      margin-top: 10px;
+      padding-top: 8px;
+      font-size: 10.5px;
+      text-align: center;
+      color: #78716C;
+    }
+
+    /* Views */
+    .tab-panel {
+      display: none;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Modal Backdrop */
+    .modal-veil {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-veil.open {
+      display: flex;
+    }
+    .modal-box {
+      background: #FFFFFF;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 4px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--slate-200);
+      padding-bottom: 8px;
+    }
+    .modal-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-900);
+      text-transform: uppercase;
+    }
+
+    @media print {
+      body { background: #FFF; font-size: 11pt; }
+      .top-bar, nav, .metric-strip, .cashier-grid > div:first-child, .btn { display: none !important; }
+      .cashier-grid { display: block; }
+      .slip-container { border: 1px solid #000; box-shadow: none; background: #FFF; width: 100%; max-width: 450px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Utility Bar -->
+  <header class="top-bar">
+    <div class="unit-identity">
+      <span class="unit-name">BANK SAMPAH BERKAH MANDIRI</span>
+      <span class="unit-locality">Unit RT 04 / RW 02 Kelurahan Sukamaju</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span class="session-badge">STATUS: PENIMBANGAN AKTIF</span>
+      <span style="font-size:11.5px; color:#CBD5E1;">Petugas: Budi Santoso</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav>
+    <button class="nav-tab active" onclick="pindahTab('kasir')">Loket Penimbangan</button>
+    <button class="nav-tab" onclick="pindahTab('buku-nasabah')">Buku Induk Rekening</button>
+    <button class="nav-tab" onclick="pindahTab('riwayat-transaksi')">Log Transaksi Kas</button>
+    <button class="nav-tab" onclick="pindahTab('tarif-komoditas')">Tarif Komoditas Sampah</button>
+  </nav>
+
+  <div class="content-area">
+
+    <!-- KPI Metric Strip -->
+    <div class="metric-strip">
+      <div class="metric-box">
+        <div class="metric-title">Total Komoditas Terkelola</div>
+        <div class="metric-number" id="m-tonase">0.00 Kg</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">Total Perputaran Kas RT</div>
+        <div class="metric-number" id="m-kas">Rp 0</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">Nasabah Terdaftar</div>
+        <div class="metric-number" id="m-nasabah">0 KK</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">Transaksi Selesai</div>
+        <div class="metric-number" id="m-transaksi">0</div>
+      </div>
+    </div>
+
+    <!-- TAB 1: LOKET PENIMBANGAN (CASHIER POS) -->
+    <section id="tab-kasir" class="tab-panel active">
+      <div class="cashier-grid">
+        
+        <!-- Left: Input Workbench -->
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Pencatatan Penimbangan Setoran Baru</span>
+            <span style="font-size:11px; color:var(--slate-500); font-family:var(--mono);" id="current-timestamp"></span>
+          </div>
+          <div class="card-body">
+            
+            <div class="field-row">
+              <div class="form-group">
+                <label for="select-nasabah">Pilih Warga Penyetor</label>
+                <select id="select-nasabah" onchange="sinkronisasiSlip()">
+                  <option value="">-- Pilih Rekening Nasabah --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="select-skema">Bentuk Konversi Insentif</label>
+                <select id="select-skema" onchange="sinkronisasiSlip()">
+                  <option value="rupiah">Tabungan Kas Tunai (Masuk Saldo Rekening)</option>
+                  <option value="sembako">Poin Sembako RT (Rp 1.000 = 1 Poin Belanja)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:8px;">
+              <span style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--slate-700);">Rincian Hasil Timbangan</span>
+              <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:11.5px;" onclick="tambahBarisTimbangan()">+ Tambah Komoditas</button>
+            </div>
+
+            <div class="table-responsive">
+              <table id="tbl-input-timbangan">
+                <thead>
+                  <tr>
+                    <th style="width:36%;">Jenis Sampah Terpilah</th>
+                    <th style="width:18%;">Berat / Satuan</th>
+                    <th class="num" style="width:20%;">Tarif / Satuan</th>
+                    <th class="num" style="width:20%;">Subtotal</th>
+                    <th style="width:6%;"></th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-timbangan">
+                  <!-- Baris dinamis diisi via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:8px;">
+              <button type="button" class="btn btn-outline" onclick="resetForm()">Kosongkan Form</button>
+              <button type="button" class="btn btn-brand" onclick="simpanTransaksi()">Sahkan Transaksi & Terbitkan Bukti</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Real Slip / Receipt Preview -->
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Bukti Setoran (Slip Fisik)</span>
+              <button type="button" class="btn btn-outline btn-action-sm" onclick="window.print()">Cetak</button>
+            </div>
+            <div class="card-body">
+              <div class="slip-container" id="slip-view">
+                <div class="slip-header">
+                  <div class="slip-title">BANK SAMPAH BERKAH MANDIRI</div>
+                  <div class="slip-meta">RT 04 / RW 02 - KEL. SUKAMAJU</div>
+                  <div class="slip-meta" id="slip-tx-id">NO: DRAFT-SETORAN</div>
+                  <div class="slip-meta" id="slip-tx-date">WAKTU: -</div>
+                </div>
+
+                <div class="slip-row">
+                  <span>NASABAH :</span>
+                  <span id="slip-nasabah-nama">-</span>
+                </div>
+                <div class="slip-row">
+                  <span>NO. REK :</span>
+                  <span id="slip-nasabah-rek">-</span>
+                </div>
+                <div class="slip-row">
+                  <span>SKEMA   :</span>
+                  <span id="slip-skema-nama">Tabungan Kas Tunai</span>
+                </div>
+
+                <div style="border-top:1px dashed #A8A29E; margin:8px 0; padding-top:6px;">
+                  <div id="slip-item-list">
+                    <div style="color:#78716C; text-align:center;">(Belum ada item ditimbang)</div>
+                  </div>
+                </div>
+
+                <div class="slip-row slip-total-line">
+                  <span>TOTAL NILAI:</span>
+                  <span id="slip-total-rp">Rp 0</span>
+                </div>
+                <div class="slip-row" style="margin-top:2px;">
+                  <span>TOTAL TIMBANGAN:</span>
+                  <span id="slip-total-kg">0.0 Kg</span>
+                </div>
+                <div class="slip-row" id="slip-konversi-row" style="display:none; color:var(--amber-700); font-weight:700;">
+                  <span>KONVERSI POIN:</span>
+                  <span id="slip-poin-val">0 Poin Sembako</span>
+                </div>
+
+                <div class="slip-footer">
+                  <div>PETUGAS PENIMBANG: BUDI SANTOSO</div>
+                  <div style="margin-top:2px;">Terima kasih telah memilah sampah dari rumah tangga.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: BUKU INDUK REKENING NASABAH -->
+    <section id="tab-buku-nasabah" class="tab-panel">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Buku Register Rekening Tabungan Warga</span>
+          <button type="button" class="btn btn-brand btn-action-sm" onclick="bukaModalDaftar()">+ Daftarkan Nasabah Baru</button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:14%;">Nomor Rekening</th>
+                  <th style="width:24%;">Nama Lengkap Nasabah</th>
+                  <th style="width:16%;">Kontak Telepon</th>
+                  <th style="width:10%;">Alamat RT</th>
+                  <th class="num" style="width:16%;">Saldo Kas Berjalan</th>
+                  <th class="num" style="width:10%;">Poin Sembako</th>
+                  <th style="width:10%;">Aksi Kasir</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-rekening-warga">
+                <!-- Data nasabah -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: LOG RIWAYAT TRANSAKSI -->
+    <section id="tab-riwayat-transaksi" class="tab-panel">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Buku Kas & Log Transaksi Penimbangan</span>
+          <button type="button" class="btn btn-outline btn-action-sm" onclick="window.print()">Cetak Rekapitulasi</button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:14%;">No. Bukti Transaksi</th>
+                  <th style="width:16%;">Waktu Setoran</th>
+                  <th style="width:22%;">Nama Nasabah</th>
+                  <th style="width:16%;">Bentuk Insentif</th>
+                  <th class="num" style="width:14%;">Tonase</th>
+                  <th class="num" style="width:18%;">Total Nominal</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-riwayat-kas">
+                <!-- Data log transaksi -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: MASTER TARIF KOMODITAS -->
+    <section id="tab-tarif-komoditas" class="tab-panel">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Master Tarif Pembelian Komoditas Daur Ulang RT</span>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:12%;">Kode Komoditas</th>
+                  <th style="width:28%;">Kategori & Nama Barang</th>
+                  <th style="width:15%;">Golongan</th>
+                  <th class="num" style="width:15%;">Harga Beli RT</th>
+                  <th style="width:10%;">Satuan</th>
+                  <th style="width:20%;">Standar Kualitas Pemilahan</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-tarif">
+                <!-- Data master tarif -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODAL PENDAFTARAN NASABAH BARU -->
+  <div id="modal-daftar" class="modal-veil">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Pendaftaran Nasabah Warga Baru</span>
+        <button type="button" class="btn-danger-link" onclick="tutupModalDaftar()">Tutup</button>
+      </div>
+      <form onsubmit="simpanNasabahBaru(event)">
+        <div class="form-group">
+          <label>Nama Lengkap (Sesuai KTP)</label>
+          <input type="text" id="reg-nama" required placeholder="Contoh: Ibu Rina Wati">
+        </div>
+        <div class="form-group">
+          <label>Nomor WhatsApp / HP Aktif</label>
+          <input type="text" id="reg-telp" required placeholder="08xxxxxxxxxx">
+        </div>
+        <div class="field-row">
+          <div class="form-group">
+            <label>RT</label>
+            <input type="text" id="reg-rt" required value="04">
+          </div>
+          <div class="form-group">
+            <label>RW</label>
+            <input type="text" id="reg-rw" required value="02">
+          </div>
+        </div>
+        <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn-outline" onclick="tutupModalDaftar()">Batal</button>
+          <button type="submit" class="btn btn-brand">Buka Buku Rekening</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL PENCAIRAN SALDO TABUNGAN -->
+  <div id="modal-tarik" class="modal-veil">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">Penarikan Saldo Kas Nasabah</span>
+        <button type="button" class="btn-danger-link" onclick="tutupModalTarik()">Tutup</button>
+      </div>
+      <form onsubmit="eksekusiPenarikan(event)">
+        <input type="hidden" id="tarik-id">
+        <div class="form-group">
+          <label>Nama Nasabah</label>
+          <div id="tarik-label-nama" style="font-weight:700; font-size:13.5px; padding:4px 0;"></div>
+        </div>
+        <div class="form-group">
+          <label>Saldo Tersedia Saat Ini</label>
+          <div id="tarik-label-saldo" style="font-family:var(--mono); font-size:15px; font-weight:700; color:var(--brand-base);">Rp 0</div>
+        </div>
+        <div class="form-group">
+          <label>Nominal Penarikan Tunai (Kelipatan Rp 1.000)</label>
+          <input type="number" id="tarik-input-nominal" min="1000" step="1000" required>
+        </div>
+        <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
+          <button type="button" class="btn btn-outline" onclick="tutupModalTarik()">Batal</button>
+          <button type="submit" class="btn btn-brand">Konfirmasi Penyerahan Uang</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let listKategori = [];
+    let listNasabah = [];
+
+    async function inisialisasiAplikasi() {
+      const waktu = new Date();
+      document.getElementById('current-timestamp').innerText = waktu.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('slip-tx-date').innerText = 'WAKTU: ' + waktu.toLocaleDateString('id-ID') + ' ' + waktu.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+      await memuatData();
+      tambahBarisTimbangan();
+    }
+
+    async function memuatData() {
+      try {
+        const [rKat, rNas, rTx, rRekap] = await Promise.all([
+          fetch('/api/kategori').then(res => res.json()),
+          fetch('/api/nasabah').then(res => res.json()),
+          fetch('/api/transaksi').then(res => res.json()),
+          fetch('/api/rekap').then(res => res.json())
+        ]);
+
+        listKategori = rKat;
+        listNasabah = rNas;
+
+        // Render Metric Strip
+        document.getElementById('m-tonase').innerText = rRekap.totalTonaseKg.toLocaleString('id-ID', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' Kg';
+        document.getElementById('m-kas').innerText = 'Rp ' + rRekap.totalKasRupiah.toLocaleString('id-ID');
+        document.getElementById('m-nasabah').innerText = rNas.length + ' KK';
+        document.getElementById('m-transaksi').innerText = rTx.length;
+
+        // Render Dropdown Nasabah
+        const select = document.getElementById('select-nasabah');
+        select.innerHTML = '<option value="">-- Pilih Rekening Nasabah --</option>';
+        rNas.forEach(n => {
+          select.innerHTML += `<option value="${n.id}">${n.nama} [${n.rekening}] — Saldo: Rp ${n.saldo.toLocaleString('id-ID')}</option>`;
+        });
+
+        // Render Tabel Master Tarif
+        const tbodyTarif = document.getElementById('tbody-tarif');
+        tbodyTarif.innerHTML = '';
+        rKat.forEach(k => {
+          tbodyTarif.innerHTML += `
+            <tr>
+              <td><code>${k.kode}</code></td>
+              <td><strong>${k.nama}</strong></td>
+              <td>${k.tipe}</td>
+              <td class="num">Rp ${k.harga.toLocaleString('id-ID')}</td>
+              <td>/${k.satuan}</td>
+              <td>${k.grade}</td>
+            </tr>
+          `;
+        });
+
+        // Render Tabel Rekening Warga
+        const tbodyRekening = document.getElementById('tbody-rekening-warga');
+        tbodyRekening.innerHTML = '';
+        rNas.forEach(n => {
+          tbodyRekening.innerHTML += `
+            <tr>
+              <td><code>${n.rekening}</code></td>
+              <td><strong>${n.nama}</strong></td>
+              <td>${n.telp}</td>
+              <td>RT ${n.rt} / RW ${n.rw || '02'}</td>
+              <td class="num" style="font-weight:700; color:var(--brand-dark);">Rp ${n.saldo.toLocaleString('id-ID')}</td>
+              <td class="num" style="color:var(--amber-700); font-weight:700;">${n.poin} Poin</td>
+              <td>
+                <button type="button" class="btn btn-outline btn-action-sm" onclick="bukaModalTarik('${n.id}', '${n.nama}', ${n.saldo})">Tarik Kas</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        // Render Log Riwayat Transaksi
+        const tbodyRiwayat = document.getElementById('tbody-riwayat-kas');
+        tbodyRiwayat.innerHTML = '';
+        rTx.forEach(t => {
+          tbodyRiwayat.innerHTML += `
+            <tr>
+              <td><code>${t.kode}</code></td>
+              <td>${t.tanggal}</td>
+              <td><strong>${t.nasabahNama}</strong></td>
+              <td>${t.skema}</td>
+              <td class="num">${t.totalBerat.toFixed(1)} Kg/L</td>
+              <td class="num" style="font-weight:700;">Rp ${t.totalNilai.toLocaleString('id-ID')}</td>
+            </tr>
+          `;
+        });
+
+      } catch (err) {
+        console.error('Gagal sinkronisasi data backend:', err);
+      }
+    }
+
+    function pindahTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    function tambahBarisTimbangan() {
+      const tbody = document.getElementById('tbody-timbangan');
+      const rowId = 'row-' + Date.now() + Math.random().toString(36).substring(2, 5);
+      
+      let optionsHtml = listKategori.map(k => `<option value="${k.kode}" data-harga="${k.harga}" data-satuan="${k.satuan}">${k.nama}</option>`).join('');
+
+      const tr = document.createElement('tr');
+      tr.id = rowId;
+      tr.innerHTML = `
+        <td>
+          <select class="tbl-kategori" onchange="sinkronisasiSlip()" required>
+            ${optionsHtml}
+          </select>
+        </td>
+        <td>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <input type="number" class="tbl-berat" value="1.0" min="0.1" step="0.1" oninput="sinkronisasiSlip()" style="width:80px;" required>
+            <span class="tbl-satuan-label" style="font-size:11.5px; color:var(--slate-500);">Kg</span>
+          </div>
+        </td>
+        <td class="num tbl-harga-display">Rp 0</td>
+        <td class="num tbl-subtotal-display" style="font-weight:700;">Rp 0</td>
+        <td style="text-align:center;">
+          <button type="button" class="btn-danger-link" onclick="hapusBaris('${rowId}')">Hapus</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+      sinkronisasiSlip();
+    }
+
+    function hapusBaris(rowId) {
+      const tr = document.getElementById(rowId);
+      if (tr) tr.remove();
+      sinkronisasiSlip();
+    }
+
+    function sinkronisasiSlip() {
+      // 1. Identitas Nasabah
+      const selectNasabah = document.getElementById('select-nasabah');
+      const nasabahId = selectNasabah.value;
+      const dataNasabah = listNasabah.find(n => n.id === nasabahId);
+
+      if (dataNasabah) {
+        document.getElementById('slip-nasabah-nama').innerText = dataNasabah.nama;
+        document.getElementById('slip-nasabah-rek').innerText = dataNasabah.rekening;
+      } else {
+        document.getElementById('slip-nasabah-nama').innerText = '(Pilih nasabah)';
+        document.getElementById('slip-nasabah-rek').innerText = '-';
+      }
+
+      // 2. Skema
+      const skemaVal = document.getElementById('select-skema').value;
+      const skemaLabel = skemaVal === 'rupiah' ? 'Tabungan Kas Tunai' : 'Poin Sembako RT';
+      document.getElementById('slip-skema-nama').innerText = skemaLabel;
+
+      // 3. Kalkulasi Timbangan
+      const rows = document.querySelectorAll('#tbody-timbangan tr');
+      const slipItemList = document.getElementById('slip-item-list');
+      slipItemList.innerHTML = '';
+
+      let grandTotalRp = 0;
+      let grandTotalBerat = 0;
+
+      if (rows.length === 0) {
+        slipItemList.innerHTML = '<div style="color:#78716C; text-align:center;">(Belum ada komoditas ditimbang)</div>';
+      }
+
+      rows.forEach(tr => {
+        const selectKat = tr.querySelector('.tbl-kategori');
+        const inputBerat = tr.querySelector('.tbl-berat');
+        const hargaDisplay = tr.querySelector('.tbl-harga-display');
+        const subtotalDisplay = tr.querySelector('.tbl-subtotal-display');
+        const satuanLabel = tr.querySelector('.tbl-satuan-label');
+
+        const opt = selectKat.options[selectKat.selectedIndex];
+        const harga = parseFloat(opt.getAttribute('data-harga')) || 0;
+        const satuan = opt.getAttribute('data-satuan') || 'Kg';
+        satuanLabel.innerText = satuan;
+
+        const berat = parseFloat(inputBerat.value) || 0;
+        const subtotal = harga * berat;
+
+        hargaDisplay.innerText = 'Rp ' + harga.toLocaleString('id-ID');
+        subtotalDisplay.innerText = 'Rp ' + subtotal.toLocaleString('id-ID');
+
+        grandTotalRp += subtotal;
+        grandTotalBerat += berat;
+
+        // Tambah ke tampilan slip
+        slipItemList.innerHTML += `
+          <div class="slip-row">
+            <span>${opt.text} (${berat.toFixed(1)} ${satuan})</span>
+            <span>Rp ${subtotal.toLocaleString('id-ID')}</span>
+          </div>
+        `;
+      });
+
+      document.getElementById('slip-total-rp').innerText = 'Rp ' + grandTotalRp.toLocaleString('id-ID');
+      document.getElementById('slip-total-kg').innerText = grandTotalBerat.toFixed(1) + ' Kg/L';
+
+      const konversiRow = document.getElementById('slip-konversi-row');
+      if (skemaVal === 'sembako') {
+        const poin = Math.floor(grandTotalRp / 1000);
+        document.getElementById('slip-poin-val').innerText = poin + ' Poin Sembako';
+        konversiRow.style.display = 'flex';
+      } else {
+        konversiRow.style.display = 'none';
+      }
+    }
+
+    async function simpanTransaksi() {
+      const selectNasabah = document.getElementById('select-nasabah');
+      const nasabahId = selectNasabah.value;
+      if (!nasabahId) {
+        alert('Peringatan: Silakan pilih nasabah warga penyetor terlebih dahulu.');
+        return;
+      }
+
+      const rows = document.querySelectorAll('#tbody-timbangan tr');
+      if (rows.length === 0) {
+        alert('Peringatan: Tambahkan minimal satu baris komoditas hasil timbangan.');
+        return;
+      }
+
+      const items = [];
+      rows.forEach(tr => {
+        const selectKat = tr.querySelector('.tbl-kategori');
+        const inputBerat = tr.querySelector('.tbl-berat');
+        items.push({
+          kode: selectKat.value,
+          berat: parseFloat(inputBerat.value) || 0
+        });
+      });
+
+      const skema = document.getElementById('select-skema').value;
+
+      try {
+        const res = await fetch('/api/transaksi', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nasabahId, skema, items })
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert('Transaksi penimbangan nomor ' + result.transaksi.kode + ' berhasil disahkan.');
+          document.getElementById('slip-tx-id').innerText = 'NO: ' + result.transaksi.kode;
+          resetForm();
+          memuatData();
+        } else {
+          alert('Gagal: ' + (result.message || 'Kesalahan validasi data'));
+        }
+      } catch (err) {
+        alert('Terjadi kesalahan koneksi server: ' + err.message);
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('select-nasabah').value = '';
+      document.getElementById('tbody-timbangan').innerHTML = '';
+      tambahBarisTimbangan();
+      sinkronisasiSlip();
+    }
+
+    function bukaModalDaftar() { document.getElementById('modal-daftar').classList.add('open'); }
+    function tutupModalDaftar() { document.getElementById('modal-daftar').classList.remove('open'); }
+
+    async function simpanNasabahBaru(e) {
+      e.preventDefault();
+      const nama = document.getElementById('reg-nama').value;
+      const telp = document.getElementById('reg-telp').value;
+      const rt = document.getElementById('reg-rt').value;
+
+      const res = await fetch('/api/nasabah', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nama, telp, rt })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('Warga berhasil didaftarkan. Nomor rekening: ' + data.nasabah.rekening);
+        tutupModalDaftar();
+        memuatData();
+      }
+    }
+
+    function bukaModalTarik(id, nama, saldo) {
+      document.getElementById('tarik-id').value = id;
+      document.getElementById('tarik-label-nama').innerText = nama;
+      document.getElementById('tarik-label-saldo').innerText = 'Rp ' + saldo.toLocaleString('id-ID');
+      document.getElementById('tarik-input-nominal').max = saldo;
+      document.getElementById('modal-tarik').classList.add('open');
+    }
+    function tutupModalTarik() { document.getElementById('modal-tarik').classList.remove('open'); }
+
+    async function eksekusiPenarikan(e) {
+      e.preventDefault();
+      const id = document.getElementById('tarik-id').value;
+      const nominal = parseFloat(document.getElementById('tarik-input-nominal').value);
+
+      const res = await fetch('/api/tarik-saldo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, nominal })
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('Penarikan kas tunai sebesar Rp ' + nominal.toLocaleString('id-ID') + ' telah diserahkan.');
+        tutupModalTarik();
+        memuatData();
+      } else {
+        alert('Gagal penarikan: ' + (data.message || 'Saldo tidak mencukupi'));
+      }
+    }
+
+    window.onload = inisialisasiAplikasi;
+  </script>
+</body>
+</html>

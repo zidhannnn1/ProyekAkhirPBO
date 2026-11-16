@@ -1,0 +1,121 @@
+{
+  "kategori": [
+    {
+      "kode": "SMP01",
+      "nama": "Botol Plastik PET Bening",
+      "tipe": "Anorganik",
+      "harga": 4500,
+      "satuan": "Kg",
+      "grade": "Grade A"
+    },
+    {
+      "kode": "SMP02",
+      "nama": "Kardus Bekas / Box Cokelat",
+      "tipe": "Anorganik",
+      "harga": 2500,
+      "satuan": "Kg",
+      "grade": "Grade A"
+    },
+    {
+      "kode": "SMP03",
+      "nama": "Kaleng Minuman Aluminium",
+      "tipe": "Anorganik",
+      "harga": 12000,
+      "satuan": "Kg",
+      "grade": "Grade A"
+    },
+    {
+      "kode": "SMP04",
+      "nama": "Kertas HVS / Arsip / Buku",
+      "tipe": "Anorganik",
+      "harga": 2200,
+      "satuan": "Kg",
+      "grade": "Grade B"
+    },
+    {
+      "kode": "SMP05",
+      "nama": "Minyak Jelantah Rumah Tangga",
+      "tipe": "Cair / Minyak",
+      "harga": 6500,
+      "satuan": "Liter",
+      "grade": "Disaring"
+    }
+  ],
+  "nasabah": [
+    {
+      "id": "NSB01",
+      "nama": "Ibu Siti Aminah",
+      "telp": "081298765432",
+      "rt": "04",
+      "rekening": "REK-04-012",
+      "saldo": 85000,
+      "poin": 25
+    },
+    {
+      "id": "NSB02",
+      "nama": "Pak Ahmad Fauzi",
+      "telp": "081311223344",
+      "rt": "04",
+      "rekening": "REK-04-018",
+      "saldo": 142000,
+      "poin": 60
+    },
+    {
+      "id": "NSB03",
+      "nama": "Ibu Dewi Lestari",
+      "telp": "085677889900",
+      "rt": "04",
+      "rekening": "REK-04-025",
+      "saldo": 45000,
+      "poin": 10
+    },
+    {
+      "id": "NSB04",
+      "nama": "Pak Bambang Suryo",
+      "telp": "081822334455",
+      "rt": "04",
+      "rekening": "REK-04-031",
+      "saldo": 210000,
+      "poin": 95
+    }
+  ],
+  "petugas": [
+    {
+      "id": "PTG01",
+      "nama": "Budi Santoso",
+      "telp": "081234567890",
+      "rt": "04",
+      "nip": "NIP-RT04-01",
+      "jabatan": "Ketua Penimbangan"
+    }
+  ],
+  "transaksi": [
+    {
+      "kode": "TRX-2026-001",
+      "tanggal": "2026-11-16 12:14",
+      "nasabahId": "NSB01",
+      "nasabahNama": "Ibu Siti Aminah",
+      "skema": "Tabungan Kas Rupiah",
+      "totalNilai": 35250,
+      "totalBerat": 10.5,
+      "items": [
+        {
+          "kode": "SMP01",
+          "nama": "Botol Plastik PET Bening",
+          "berat": 4.5,
+          "harga": 4500,
+          "subtotal": 20250,
+          "catatan": "Bersih"
+        },
+        {
+          "kode": "SMP02",
+          "nama": "Kardus Bekas / Box Cokelat",
+          "berat": 6.0,
+          "harga": 2500,
+          "subtotal": 15000,
+          "catatan": "Kering"
+        }
+      ]
+    }
+  ]
+}

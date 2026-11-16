@@ -1,0 +1,178 @@
+<mxfile host="Electron" modified="2026-11-16T04:20:00.000Z" agent="Antigravity" version="22.1.0" type="device">
+  <diagram id="EcoTrash_UML_v2" name="Class Diagram EcoTrash v2">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2339" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 1. Pengguna (Abstract Class) -->
+        <mxCell id="c_pengguna" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;abstract&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;Pengguna&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;# idPengguna: String&lt;br/&gt;# namaLengkap: String&lt;br/&gt;# noTelepon: String&lt;br/&gt;# nomorRT: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ login(user: String, pass: String): boolean&lt;br/&gt;+ peran()*: String&lt;br/&gt;+ getNamaLengkap(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1B4D3E;fontColor=#ffffff;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="580" y="40" width="280" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- 2. NasabahWarga -->
+        <mxCell id="c_nasabah" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;NasabahWarga&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- nomorRekening: String&lt;br/&gt;- saldoTabungan: double&lt;br/&gt;- poinReward: int&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ tambahSaldo(nominal: double): void&lt;br/&gt;+ kurangiSaldo(nominal: double): boolean&lt;br/&gt;+ tambahPoin(poin: int): void&lt;br/&gt;+ peran(): String&lt;br/&gt;+ getSaldo(): double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="260" width="260" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- 3. PetugasBankSampah -->
+        <mxCell id="c_petugas" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;PetugasBankSampah&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- nipPetugas: String&lt;br/&gt;- jabatan: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ catatSetoran(t: TransaksiSetoran): void&lt;br/&gt;+ peran(): String&lt;br/&gt;+ getNip(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="780" y="260" width="260" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- 4. BankSampahUnit (Agregator) -->
+        <mxCell id="c_unit" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;BankSampahUnit&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- namaUnit: String&lt;br/&gt;- alamatRT: String&lt;br/&gt;- daftarKategori: List&amp;lt;KategoriSampah&amp;gt;&lt;br/&gt;- daftarPetugas: List&amp;lt;PetugasBankSampah&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ tambahKategori(k: KategoriSampah): void&lt;br/&gt;+ daftarkanPetugas(p: Petugas): void&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="260" width="280" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- 5. TransaksiSetoran (Kelas Inti Proses Bisnis) -->
+        <mxCell id="c_transaksi" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;TransaksiSetoran&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kodeTransaksi: String&lt;br/&gt;- nasabah: NasabahWarga&lt;br/&gt;- tanggalSetor: LocalDate&lt;br/&gt;- status: String&lt;br/&gt;- daftarItem: List&amp;lt;DetailSetoran&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ tambahItem(k: Kategori, berat: double): void&lt;br/&gt;+ hitungTotalNilai(): double&lt;br/&gt;+ selesaikan(skema: SkemaReward): void&lt;br/&gt;+ getKode(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="520" width="270" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- 6. DetailSetoran (Komposisi Transaksi) -->
+        <mxCell id="c_detail" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;DetailSetoran&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- beratTimbangan: double&lt;br/&gt;- catatanPilah: String&lt;br/&gt;- kategori: KategoriSampah&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ getSubtotal(): double&lt;br/&gt;+ getKategori(): KategoriSampah&lt;br/&gt;+ getBerat(): double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="790" width="250" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- 7. KategoriSampah (Abstract Class) -->
+        <mxCell id="c_kategori" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;abstract&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;KategoriSampah&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kodeSampah: String&lt;br/&gt;- namaKategori: String&lt;br/&gt;- hargaBeliPerSatuan: double&lt;br/&gt;- satuan: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ hitungNilaiSubtotal(kuantitas: double)*: double&lt;br/&gt;+ getHargaBeli(): double&lt;br/&gt;+ getNamaKategori(): String&lt;br/&gt;+ setHargaBeli(harga: double): void&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1B4D3E;fontColor=#ffffff;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="520" width="280" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- 8. SampahAnorganik -->
+        <mxCell id="c_anorganik" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;SampahAnorganik&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- gradePilah: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ hitungNilaiSubtotal(beratKg: double): double&lt;br/&gt;+ getGrade(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1030" y="790" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- 9. MinyakJelantah -->
+        <mxCell id="c_jelantah" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;MinyakJelantah&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kadarAsam: double&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ hitungNilaiSubtotal(liter: double): double&lt;br/&gt;+ getKadarAsam(): double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="790" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- 10. <<interface>> SkemaReward -->
+        <mxCell id="c_reward_iface" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;interface&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;SkemaReward&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ terapkanReward(n: NasabahWarga, total: double)*: void&lt;br/&gt;+ getNamaSkema()*: String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#2E7D5E;fontColor=#ffffff;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="740" y="520" width="280" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- 11. RewardTabunganRupiah -->
+        <mxCell id="c_reward_uang" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;RewardTabunganRupiah&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ terapkanReward(n: NasabahWarga, total: double): void&lt;br/&gt;+ getNamaSkema(): String&lt;br/&gt;+ cairkanTunai(n: NasabahWarga, jml: double): boolean&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="690" y="690" width="240" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- 12. RewardPoinSembako -->
+        <mxCell id="c_reward_sembako" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;RewardPoinSembako&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- KONVERSI_RP_PER_POIN: int = 1000&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ terapkanReward(n: NasabahWarga, total: double): void&lt;br/&gt;+ getNamaSkema(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="960" y="690" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- 13. <<interface>> BisaCairkanTunai (LSP) -->
+        <mxCell id="c_cair_iface" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;interface&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;BisaCairkanTunai&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ cairkanTunai(n: NasabahWarga, jml: double)*: boolean&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#2E7D5E;fontColor=#ffffff;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="690" y="860" width="240" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- 14. <<interface>> TransaksiRepository (DIP) -->
+        <mxCell id="c_repo_iface" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;interface&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;TransaksiRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ simpan(t: TransaksiSetoran)*: void&lt;br/&gt;+ cariSemua()*: List&amp;lt;TransaksiSetoran&amp;gt;&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#2E7D5E;fontColor=#ffffff;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="520" width="250" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- 15. MemoryTransaksiRepository -->
+        <mxCell id="c_repo_impl" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;MemoryTransaksiRepository&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- storage: List&amp;lt;TransaksiSetoran&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ simpan(t: TransaksiSetoran): void&lt;br/&gt;+ cariSemua(): List&amp;lt;TransaksiSetoran&amp;gt;&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="680" width="250" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- 16. BankSampahService (Service Layer) -->
+        <mxCell id="c_service" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;BankSampahService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- repo: TransaksiRepository&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ BankSampahService(r: TransaksiRepo)&lt;br/&gt;+ prosesSetoran(t: Transaksi, s: Skema): void&lt;br/&gt;+ getRekapTotalTonase(): double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="260" width="250" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- ================= RELASI ANTARKELAS ================= -->
+
+        <!-- Generalisasi: NasabahWarga -> Pengguna -->
+        <mxCell id="e_nasabah_pengguna" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;endSize=12;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_nasabah" target="c_pengguna">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Generalisasi: PetugasBankSampah -> Pengguna -->
+        <mxCell id="e_petugas_pengguna" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;endSize=12;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_petugas" target="c_pengguna">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Generalisasi: SampahAnorganik -> KategoriSampah -->
+        <mxCell id="e_anorganik_kategori" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;endSize=12;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_anorganik" target="c_kategori">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Generalisasi: MinyakJelantah -> KategoriSampah -->
+        <mxCell id="e_jelantah_kategori" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=0;endSize=12;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_jelantah" target="c_kategori">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Komposisi: TransaksiSetoran ◆-> DetailSetoran -->
+        <mxCell id="e_trans_detail" value="1..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=1;startSize=14;endArrow=none;strokeColor=#1B4D3E;strokeWidth=2;" edge="1" parent="1" source="c_transaksi" target="c_detail">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Agregasi: BankSampahUnit ◇-> KategoriSampah -->
+        <mxCell id="e_unit_kategori" value="0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=0;startSize=14;endArrow=none;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_unit" target="c_kategori">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Agregasi: BankSampahUnit ◇-> PetugasBankSampah -->
+        <mxCell id="e_unit_petugas" value="1..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=diamond;startFill=0;startSize=14;endArrow=none;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_unit" target="c_petugas">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Asosiasi: TransaksiSetoran -> NasabahWarga -->
+        <mxCell id="e_trans_nasabah" value="0..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endSize=10;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_transaksi" target="c_nasabah">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Asosiasi: DetailSetoran -> KategoriSampah -->
+        <mxCell id="e_detail_kategori" value="merujuk" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endSize=10;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_detail" target="c_kategori">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Realisasi: RewardTabunganRupiah ..|> SkemaReward -->
+        <mxCell id="e_uang_reward" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endFill=0;endSize=12;strokeColor=#2E7D5E;strokeWidth=1.5;" edge="1" parent="1" source="c_reward_uang" target="c_reward_iface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Realisasi: RewardPoinSembako ..|> SkemaReward -->
+        <mxCell id="e_sembako_reward" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endFill=0;endSize=12;strokeColor=#2E7D5E;strokeWidth=1.5;" edge="1" parent="1" source="c_reward_sembako" target="c_reward_iface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Realisasi: RewardTabunganRupiah ..|> BisaCairkanTunai -->
+        <mxCell id="e_uang_cair" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endFill=0;endSize=12;strokeColor=#2E7D5E;strokeWidth=1.5;" edge="1" parent="1" source="c_reward_uang" target="c_cair_iface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Realisasi: MemoryTransaksiRepository ..|> TransaksiRepository -->
+        <mxCell id="e_repo_realisasi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=block;endFill=0;endSize=12;strokeColor=#2E7D5E;strokeWidth=1.5;" edge="1" parent="1" source="c_repo_impl" target="c_repo_iface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Dependensi: TransaksiSetoran ..> SkemaReward -->
+        <mxCell id="e_trans_reward" value="&amp;laquo;uses&amp;raquo;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endSize=10;strokeColor=#2E7D5E;strokeWidth=1.5;" edge="1" parent="1" source="c_transaksi" target="c_reward_iface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Dependensi: BankSampahService ..> TransaksiRepository -->
+        <mxCell id="e_service_repo" value="&amp;laquo;injects&amp;raquo;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endSize=10;strokeColor=#1B4D3E;strokeWidth=1.5;" edge="1" parent="1" source="c_service" target="c_repo_iface">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

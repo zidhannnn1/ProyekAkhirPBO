@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bank Sampah Berkah Mandiri — Unit RT 04 / RW 02</title>
+  <title>HTS - Hanya Tempat Sampah</title>
   <style>
     :root {
       --slate-900: #0F172A;
@@ -13,27 +14,31 @@
       --slate-500: #64748B;
       --slate-200: #E2E8F0;
       --slate-100: #F1F5F9;
-      --slate-50:  #F8FAFC;
-      
-      --brand-dark:   #17382B;
-      --brand-base:   #1F4E3D;
+      --slate-50: #F8FAFC;
+
+      --brand-dark: #17382B;
+      --brand-base: #1F4E3D;
       --brand-subtle: #EDF4F0;
       --brand-border: #BCD5C9;
-      
+
       --amber-700: #B45309;
-      --amber-50:  #FFFBEB;
+      --amber-50: #FFFBEB;
       --amber-200: #FDE68A;
-      
-      --red-700:   #B91C1C;
-      --red-50:    #FEF2F2;
-      --red-200:   #FECACA;
+
+      --red-700: #B91C1C;
+      --red-50: #FEF2F2;
+      --red-200: #FECACA;
 
       --mono: "SF Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
       --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: var(--sans);
       background-color: var(--slate-100);
@@ -53,21 +58,25 @@
       align-items: center;
       border-bottom: 2px solid var(--brand-base);
     }
+
     .unit-identity {
       display: flex;
       align-items: baseline;
       gap: 12px;
     }
+
     .unit-name {
       font-size: 15px;
       font-weight: 700;
       letter-spacing: -0.01em;
     }
+
     .unit-locality {
       font-size: 12px;
       color: #94A3B8;
       font-weight: 400;
     }
+
     .session-badge {
       font-size: 11px;
       background: var(--brand-base);
@@ -86,6 +95,7 @@
       display: flex;
       gap: 2px;
     }
+
     .nav-tab {
       background: none;
       border: none;
@@ -99,9 +109,11 @@
       letter-spacing: 0.03em;
       transition: all 0.1s ease;
     }
+
     .nav-tab:hover {
       color: var(--brand-base);
     }
+
     .nav-tab.active {
       color: var(--brand-base);
       border-bottom-color: var(--brand-base);
@@ -121,12 +133,14 @@
       gap: 12px;
       margin-bottom: 16px;
     }
+
     .metric-box {
       background: #FFFFFF;
       border: 1px solid var(--slate-200);
       border-radius: 4px;
       padding: 12px 16px;
     }
+
     .metric-title {
       font-size: 11px;
       font-weight: 600;
@@ -134,6 +148,7 @@
       color: var(--slate-500);
       letter-spacing: 0.04em;
     }
+
     .metric-number {
       font-size: 22px;
       font-weight: 700;
@@ -155,8 +170,9 @@
       background: #FFFFFF;
       border: 1px solid var(--slate-200);
       border-radius: 4px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
+
     .card-head {
       padding: 14px 18px;
       border-bottom: 1px solid var(--slate-200);
@@ -165,6 +181,7 @@
       align-items: center;
       background: var(--slate-50);
     }
+
     .card-title {
       font-size: 13.5px;
       font-weight: 700;
@@ -172,6 +189,7 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
     }
+
     .card-body {
       padding: 18px;
     }
@@ -183,9 +201,11 @@
       gap: 14px;
       margin-bottom: 14px;
     }
+
     .form-group {
       margin-bottom: 12px;
     }
+
     label {
       display: block;
       font-size: 11.5px;
@@ -195,7 +215,10 @@
       margin-bottom: 5px;
       letter-spacing: 0.02em;
     }
-    select, input[type="text"], input[type="number"] {
+
+    select,
+    input[type="text"],
+    input[type="number"] {
       width: 100%;
       height: 36px;
       padding: 6px 10px;
@@ -207,7 +230,9 @@
       outline: none;
       font-family: inherit;
     }
-    select:focus, input:focus {
+
+    select:focus,
+    input:focus {
       border-color: var(--brand-base);
       box-shadow: 0 0 0 1px var(--brand-base);
     }
@@ -217,16 +242,20 @@
       overflow-x: auto;
       margin-top: 10px;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
     }
-    th, td {
+
+    th,
+    td {
       padding: 8px 10px;
       border-bottom: 1px solid var(--slate-200);
       text-align: left;
     }
+
     th {
       font-size: 11px;
       font-weight: 600;
@@ -235,7 +264,9 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-    td.num, th.num {
+
+    td.num,
+    th.num {
       text-align: right;
       font-family: var(--mono);
       font-feature-settings: "tnum";
@@ -255,21 +286,26 @@
       text-decoration: none;
       transition: background 0.1s ease;
     }
+
     .btn-brand {
       background: var(--brand-base);
       color: #FFFFFF;
     }
+
     .btn-brand:hover {
       background: var(--brand-dark);
     }
+
     .btn-outline {
       background: #FFFFFF;
       border-color: var(--slate-200);
       color: var(--slate-700);
     }
+
     .btn-outline:hover {
       background: var(--slate-100);
     }
+
     .btn-danger-link {
       background: none;
       border: none;
@@ -279,9 +315,11 @@
       font-size: 12px;
       padding: 2px 6px;
     }
+
     .btn-danger-link:hover {
       text-decoration: underline;
     }
+
     .btn-action-sm {
       padding: 4px 8px;
       font-size: 11px;
@@ -297,29 +335,34 @@
       font-family: var(--mono);
       font-size: 12px;
       color: #292524;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
     }
+
     .slip-header {
       text-align: center;
       border-bottom: 1px dashed #A8A29E;
       padding-bottom: 10px;
       margin-bottom: 10px;
     }
+
     .slip-title {
       font-weight: 700;
       font-size: 13px;
       text-transform: uppercase;
     }
+
     .slip-meta {
       font-size: 11px;
       color: #57534E;
       margin-top: 2px;
     }
+
     .slip-row {
       display: flex;
       justify-content: space-between;
       margin-bottom: 4px;
     }
+
     .slip-total-line {
       border-top: 1px dashed #A8A29E;
       margin-top: 8px;
@@ -327,6 +370,7 @@
       font-weight: 700;
       font-size: 13px;
     }
+
     .slip-footer {
       border-top: 1px dashed #A8A29E;
       margin-top: 10px;
@@ -340,6 +384,7 @@
     .tab-panel {
       display: none;
     }
+
     .tab-panel.active {
       display: block;
     }
@@ -348,23 +393,29 @@
     .modal-veil {
       display: none;
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(15, 23, 42, 0.5);
       z-index: 1000;
       align-items: center;
       justify-content: center;
     }
+
     .modal-veil.open {
       display: flex;
     }
+
     .modal-box {
       background: #FFFFFF;
       width: 100%;
       max-width: 440px;
       border-radius: 4px;
       padding: 20px;
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
     }
+
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -373,6 +424,7 @@
       border-bottom: 1px solid var(--slate-200);
       padding-bottom: 8px;
     }
+
     .modal-title {
       font-size: 14px;
       font-weight: 700;
@@ -381,24 +433,46 @@
     }
 
     @media print {
-      body { background: #FFF; font-size: 11pt; }
-      .top-bar, nav, .metric-strip, .cashier-grid > div:first-child, .btn { display: none !important; }
-      .cashier-grid { display: block; }
-      .slip-container { border: 1px solid #000; box-shadow: none; background: #FFF; width: 100%; max-width: 450px; margin: 0 auto; }
+      body {
+        background: #FFF;
+        font-size: 11pt;
+      }
+
+      .top-bar,
+      nav,
+      .metric-strip,
+      .cashier-grid>div:first-child,
+      .btn {
+        display: none !important;
+      }
+
+      .cashier-grid {
+        display: block;
+      }
+
+      .slip-container {
+        border: 1px solid #000;
+        box-shadow: none;
+        background: #FFF;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Top Utility Bar -->
   <header class="top-bar">
     <div class="unit-identity">
-      <span class="unit-name">BANK SAMPAH BERKAH MANDIRI</span>
-      <span class="unit-locality">Unit RT 04 / RW 02 Kelurahan Sukamaju</span>
+      <span class="unit-name">HTS - Hanya Tempat Sampah</span>
+      <span class="unit-locality">Unit RT 04 / RW 06 Kelurahan Yahaha HTSAN DOANG DEK</span>
     </div>
     <div style="display:flex; align-items:center; gap:12px;">
       <span class="session-badge">STATUS: PENIMBANGAN AKTIF</span>
-      <span style="font-size:11.5px; color:#CBD5E1;">Petugas: Budi Santoso</span>
+      <span style="font-size:11.5px; color:#CBD5E1;">Petugas: HAHAHA Tanpa Status</span>
     </div>
   </header>
 
@@ -435,15 +509,16 @@
     <!-- TAB 1: LOKET PENIMBANGAN (CASHIER POS) -->
     <section id="tab-kasir" class="tab-panel active">
       <div class="cashier-grid">
-        
+
         <!-- Left: Input Workbench -->
         <div class="card">
           <div class="card-head">
             <span class="card-title">Pencatatan Penimbangan Setoran Baru</span>
-            <span style="font-size:11px; color:var(--slate-500); font-family:var(--mono);" id="current-timestamp"></span>
+            <span style="font-size:11px; color:var(--slate-500); font-family:var(--mono);"
+              id="current-timestamp"></span>
           </div>
           <div class="card-body">
-            
+
             <div class="field-row">
               <div class="form-group">
                 <label for="select-nasabah">Pilih Warga Penyetor</label>
@@ -460,9 +535,12 @@
               </div>
             </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:8px;">
-              <span style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--slate-700);">Rincian Hasil Timbangan</span>
-              <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:11.5px;" onclick="tambahBarisTimbangan()">+ Tambah Komoditas</button>
+            <div
+              style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:8px;">
+              <span style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--slate-700);">Rincian
+                Hasil Timbangan</span>
+              <button type="button" class="btn btn-outline" style="padding:4px 10px; font-size:11.5px;"
+                onclick="tambahBarisTimbangan()">+ Tambah Komoditas</button>
             </div>
 
             <div class="table-responsive">
@@ -484,7 +562,8 @@
 
             <div style="margin-top:20px; display:flex; justify-content:flex-end; gap:8px;">
               <button type="button" class="btn btn-outline" onclick="resetForm()">Kosongkan Form</button>
-              <button type="button" class="btn btn-brand" onclick="simpanTransaksi()">Sahkan Transaksi & Terbitkan Bukti</button>
+              <button type="button" class="btn btn-brand" onclick="simpanTransaksi()">Sahkan Transaksi & Terbitkan
+                Bukti</button>
             </div>
 
           </div>
@@ -500,8 +579,8 @@
             <div class="card-body">
               <div class="slip-container" id="slip-view">
                 <div class="slip-header">
-                  <div class="slip-title">BANK SAMPAH BERKAH MANDIRI</div>
-                  <div class="slip-meta">RT 04 / RW 02 - KEL. SUKAMAJU</div>
+                  <div class="slip-title">HTS - Hanya Tempat Sampah</div>
+                  <div class="slip-meta">RT 04 / RW 06 - KEL. Yahaha HTSAN DOANG DEK </div>
                   <div class="slip-meta" id="slip-tx-id">NO: DRAFT-SETORAN</div>
                   <div class="slip-meta" id="slip-tx-date">WAKTU: -</div>
                 </div>
@@ -515,7 +594,7 @@
                   <span id="slip-nasabah-rek">-</span>
                 </div>
                 <div class="slip-row">
-                  <span>SKEMA   :</span>
+                  <span>SKEMA :</span>
                   <span id="slip-skema-nama">Tabungan Kas Tunai</span>
                 </div>
 
@@ -533,7 +612,8 @@
                   <span>TOTAL TIMBANGAN:</span>
                   <span id="slip-total-kg">0.0 Kg</span>
                 </div>
-                <div class="slip-row" id="slip-konversi-row" style="display:none; color:var(--amber-700); font-weight:700;">
+                <div class="slip-row" id="slip-konversi-row"
+                  style="display:none; color:var(--amber-700); font-weight:700;">
                   <span>KONVERSI POIN:</span>
                   <span id="slip-poin-val">0 Poin Sembako</span>
                 </div>
@@ -555,7 +635,8 @@
       <div class="card">
         <div class="card-head">
           <span class="card-title">Buku Register Rekening Tabungan Warga</span>
-          <button type="button" class="btn btn-brand btn-action-sm" onclick="bukaModalDaftar()">+ Daftarkan Nasabah Baru</button>
+          <button type="button" class="btn btn-brand btn-action-sm" onclick="bukaModalDaftar()">+ Daftarkan Nasabah
+            Baru</button>
         </div>
         <div class="card-body">
           <div class="table-responsive">
@@ -585,7 +666,8 @@
       <div class="card">
         <div class="card-head">
           <span class="card-title">Buku Kas & Log Transaksi Penimbangan</span>
-          <button type="button" class="btn btn-outline btn-action-sm" onclick="window.print()">Cetak Rekapitulasi</button>
+          <button type="button" class="btn btn-outline btn-action-sm" onclick="window.print()">Cetak
+            Rekapitulasi</button>
         </div>
         <div class="card-body">
           <div class="table-responsive">
@@ -688,7 +770,8 @@
         </div>
         <div class="form-group">
           <label>Saldo Tersedia Saat Ini</label>
-          <div id="tarik-label-saldo" style="font-family:var(--mono); font-size:15px; font-weight:700; color:var(--brand-base);">Rp 0</div>
+          <div id="tarik-label-saldo"
+            style="font-family:var(--mono); font-size:15px; font-weight:700; color:var(--brand-base);">Rp 0</div>
         </div>
         <div class="form-group">
           <label>Nominal Penarikan Tunai (Kelipatan Rp 1.000)</label>
@@ -728,7 +811,7 @@
         listNasabah = rNas;
 
         // Render Metric Strip
-        document.getElementById('m-tonase').innerText = rRekap.totalTonaseKg.toLocaleString('id-ID', {minimumFractionDigits: 1, maximumFractionDigits: 1}) + ' Kg';
+        document.getElementById('m-tonase').innerText = rRekap.totalTonaseKg.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' Kg';
         document.getElementById('m-kas').innerText = 'Rp ' + rRekap.totalKasRupiah.toLocaleString('id-ID');
         document.getElementById('m-nasabah').innerText = rNas.length + ' KK';
         document.getElementById('m-transaksi').innerText = rTx.length;
@@ -806,7 +889,7 @@
     function tambahBarisTimbangan() {
       const tbody = document.getElementById('tbody-timbangan');
       const rowId = 'row-' + Date.now() + Math.random().toString(36).substring(2, 5);
-      
+
       let optionsHtml = listKategori.map(k => `<option value="${k.kode}" data-harga="${k.harga}" data-satuan="${k.satuan}">${k.nama}</option>`).join('');
 
       const tr = document.createElement('tr');
@@ -1020,4 +1103,5 @@
     window.onload = inisialisasiAplikasi;
   </script>
 </body>
+
 </html>

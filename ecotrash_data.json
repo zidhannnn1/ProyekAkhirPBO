@@ -75,21 +75,50 @@
       "telp": "081822334455",
       "rt": "04",
       "rekening": "REK-04-031",
-      "saldo": 210000,
+      "saldo": 110000.0,
       "poin": 95
-    }
-  ],
-  "petugas": [
+    },
     {
-      "id": "PTG01",
-      "nama": "Budi Santoso",
-      "telp": "081234567890",
+      "id": "NSB-005",
+      "nama": "Mutmainah",
+      "telp": "0891200301231",
       "rt": "04",
-      "nip": "NIP-RT04-01",
-      "jabatan": "Ketua Penimbangan"
+      "rw": "02",
+      "rekening": "BS-04-005",
+      "saldo": 45997800.0,
+      "poin": 0
     }
   ],
   "transaksi": [
+    {
+      "kode": "TRX-2026-002",
+      "tanggal": "2026-11-17 13:41",
+      "nasabahId": "NSB-005",
+      "nasabahNama": "Mutmainah",
+      "nasabahRekening": "BS-04-005",
+      "skema": "Tabungan Kas Tunai",
+      "totalNilai": 46997800.0,
+      "totalBerat": 19999.0,
+      "items": [
+        {
+          "kode": "SMP02",
+          "nama": "Kardus Bekas / Box Cokelat",
+          "berat": 10000.0,
+          "harga": 2500,
+          "subtotal": 25000000.0,
+          "satuan": "Kg"
+        },
+        {
+          "kode": "SMP04",
+          "nama": "Kertas HVS / Arsip / Buku",
+          "berat": 9999.0,
+          "harga": 2200,
+          "subtotal": 21997800.0,
+          "satuan": "Kg"
+        }
+      ],
+      "petugas": "Budi Santoso"
+    },
     {
       "kode": "TRX-2026-001",
       "tanggal": "2026-11-16 12:14",

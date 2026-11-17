@@ -306,7 +306,6 @@ def run_server():
     print("  BANK SAMPAH BERKAH MANDIRI — SERVER OPERASIONAL AKTIF         ")
     print("=================================================================")
     print(f"  URL Loket Web: http://localhost:{PORT}")
-    print("  Desain bebas AI-slop: antarmuka kasir administratif & slip fisik.")
     print("=================================================================")
     try:
         httpd.serve_forever()

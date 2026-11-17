@@ -68,8 +68,8 @@ public class App {
 
         // Transaksi 1: Nasabah Ibu Siti menyetor botol & kardus (Skema Tabungan Rupiah)
         TransaksiSetoran tx1 = new TransaksiSetoran("TRX-2026-001", nasabahSiti, LocalDate.now());
-        tx1.tambahItem(botolPlastik, 4.5, "Botol bersih tanpa label"); // 4.5 kg * 4500 = 20.250
-        tx1.tambahItem(kardus, 6.0, "Kardus lipat rapi");             // 6.0 kg * 2500 = 15.000
+        tx1.tambahItem(botolPlastik, 4.5, "Botol bersih tanpa label");
+        tx1.tambahItem(kardus, 6.0, "Kardus lipat rapi");
 
         SkemaReward rewardRupiah = new RewardTabunganRupiah();
         service.prosesSetoran(tx1, rewardRupiah, petugasBudi);
@@ -78,8 +78,8 @@ public class App {
 
         // Transaksi 2: Nasabah Pak Ahmad menyetor aluminium & jelantah (Skema Poin Sembako)
         TransaksiSetoran tx2 = new TransaksiSetoran("TRX-2026-002", nasabahAhmad, LocalDate.now());
-        tx2.tambahItem(kalengAluminium, 2.0, "Kaleng aluminium bersih"); // 2.0 kg * 12000 = 24.000
-        tx2.tambahItem(jelantah, 4.0, "Minyak jelantah saring");         // 4.0 liter * 6500 = 26.000
+        tx2.tambahItem(kalengAluminium, 2.0, "Kaleng aluminium bersih");
+        tx2.tambahItem(jelantah, 4.0, "Minyak jelantah saring");
 
         SkemaReward rewardSembako = new RewardPoinSembako();
         service.prosesSetoran(tx2, rewardSembako, petugasBudi);
@@ -108,20 +108,16 @@ public class App {
         // Rekapitulasi Akhir
         cli.tampilkanRekapitulasi();
 
-        // Opsi Menu Interaktif jika pengguna memanggil dengan argumen --interactive
-        boolean interactive = false;
+        // Opsi Menu Interaktif bila dipanggil dengan argumen --interactive
         for (String arg : args) {
             if ("--interactive".equalsIgnoreCase(arg) || "-i".equalsIgnoreCase(arg)) {
-                interactive = true;
-                break;
+                Scanner scanner = new Scanner(System.in);
+                cli.jalankanMenuInteraktif(scanner, daftarNasabah);
+                scanner.close();
+                return;
             }
         }
-        if (interactive) {
-            Scanner scanner = new Scanner(System.in);
-            cli.jalankanMenuInteraktif(scanner, daftarNasabah);
-            scanner.close();
-        } else {
-            System.out.println("[PETUNJUK] Jalankan dengan argumen '--interactive' untuk membuka menu loket interaktif.");
-        }
+
+        System.out.println("[PETUNJUK] Jalankan dengan argumen '--interactive' untuk membuka menu loket interaktif.");
     }
 }

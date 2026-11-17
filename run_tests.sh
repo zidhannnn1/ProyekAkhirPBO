@@ -3,3 +3,4 @@
 export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 java -cp "$DIR/ecotrash/bin" id.ac.kampus.ecotrash.KodeUjiSederhana
+

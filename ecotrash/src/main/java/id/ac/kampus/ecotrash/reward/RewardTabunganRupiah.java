@@ -3,20 +3,26 @@ package id.ac.kampus.ecotrash.reward;
 import id.ac.kampus.ecotrash.model.NasabahWarga;
 
 /**
- * Implementasi reward berupa saldo uang tunai yang dicatat pada buku tabungan nasabah.
+ * Skema reward berupa tabungan kas rupiah yang bisa dicairkan tunai.
  */
 public class RewardTabunganRupiah implements SkemaReward, BisaCairkanTunai {
 
     @Override
     public void terapkanReward(NasabahWarga nasabah, double totalNominalRupiah) {
-        if (nasabah != null && totalNominalRupiah > 0) {
-            nasabah.tambahSaldo(totalNominalRupiah);
+        if (nasabah == null) {
+            throw new IllegalArgumentException("Nasabah tidak boleh null.");
         }
+        if (totalNominalRupiah <= 0) {
+            return;
+        }
+        nasabah.tambahSaldo(totalNominalRupiah);
     }
 
     @Override
     public boolean cairkanTunai(NasabahWarga nasabah, double nominal) {
-        if (nasabah == null || nominal <= 0) return false;
+        if (nasabah == null) {
+            throw new IllegalArgumentException("Nasabah tidak boleh null.");
+        }
         return nasabah.kurangiSaldo(nominal);
     }
 
@@ -27,7 +33,6 @@ public class RewardTabunganRupiah implements SkemaReward, BisaCairkanTunai {
 
     @Override
     public String getKeterangan() {
-        return "Nilai penjualan sampah 100% masuk ke saldo tabungan kas uang tunai.";
+        return "Nilai setoran masuk ke saldo tabungan nasabah dan dapat dicairkan tunai.";
     }
 }
-

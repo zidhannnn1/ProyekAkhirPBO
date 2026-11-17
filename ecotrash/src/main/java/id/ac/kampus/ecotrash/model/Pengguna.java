@@ -1,18 +1,20 @@
 package id.ac.kampus.ecotrash.model;
 
 /**
- * Kelas abstrak dasar yang memodelkan pengguna sistem EcoTrash.
- * Menerapkan prinsip Abstraksi dan Pewarisan (Inheritance).
+ * Basis abstrak untuk seluruh pengguna sistem Bank Sampah.
+ * Identitas bersifat immutable setelah konstruksi.
  */
 public abstract class Pengguna {
-    protected String idPengguna;
-    protected String namaLengkap;
-    protected String noTelepon;
-    protected String nomorRT;
 
-    public Pengguna(String idPengguna, String namaLengkap, String noTelepon, String nomorRT) {
-        if (idPengguna == null || idPengguna.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID Pengguna tidak boleh kosong.");
+    protected final String idPengguna;
+    protected final String namaLengkap;
+    protected final String noTelepon;
+    protected final String nomorRT;
+
+    protected Pengguna(String idPengguna, String namaLengkap,
+                       String noTelepon, String nomorRT) {
+        if (idPengguna == null || idPengguna.isBlank()) {
+            throw new IllegalArgumentException("idPengguna tidak boleh kosong");
         }
         this.idPengguna = idPengguna;
         this.namaLengkap = namaLengkap;
@@ -22,24 +24,8 @@ public abstract class Pengguna {
 
     public abstract String peran();
 
-    public boolean login(String username, String password) {
-        return this.idPengguna.equalsIgnoreCase(username) && password != null && password.length() >= 4;
-    }
-
-    public String getIdPengguna() {
-        return idPengguna;
-    }
-
-    public String getNamaLengkap() {
-        return namaLengkap;
-    }
-
-    public String getNoTelepon() {
-        return noTelepon;
-    }
-
-    public String getNomorRT() {
-        return nomorRT;
-    }
+    public String getIdPengguna() { return idPengguna; }
+    public String getNamaLengkap() { return namaLengkap; }
+    public String getNoTelepon() { return noTelepon; }
+    public String getNomorRT() { return nomorRT; }
 }
-

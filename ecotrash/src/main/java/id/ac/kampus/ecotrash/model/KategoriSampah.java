@@ -1,53 +1,42 @@
 package id.ac.kampus.ecotrash.model;
 
 /**
- * Kelas abstrak induk untuk seluruh komoditas sampah yang diterima di bank sampah.
+ * Basis abstrak untuk kategori sampah yang diterima bank sampah.
+ * Setiap kategori memiliki kode unik, harga beli per satuan, dan
+ * cara hitung subtotal yang spesifik per jenis sampah.
  */
 public abstract class KategoriSampah {
-    private String kodeSampah;
-    private String namaKategori;
-    private double hargaBeliPerSatuan;
-    private String satuan;
 
-    public KategoriSampah(String kodeSampah, String namaKategori, double hargaBeliPerSatuan, String satuan) {
-        if (kodeSampah == null || kodeSampah.trim().isEmpty()) {
-            throw new IllegalArgumentException("Kode sampah tidak boleh kosong.");
+    private final String kodeSampah;
+    private final String namaKategori;
+    private final String satuan;
+    private double hargaBeliPerSatuan;
+
+    protected KategoriSampah(String kodeSampah, String namaKategori,
+                             String satuan, double hargaBeliPerSatuan) {
+        if (kodeSampah == null || kodeSampah.isBlank()) {
+            throw new IllegalArgumentException("kodeSampah tidak boleh kosong");
         }
         if (hargaBeliPerSatuan < 0) {
-            throw new IllegalArgumentException("Harga beli per satuan tidak boleh bernilai negatif.");
+            throw new IllegalArgumentException("Harga beli tidak boleh negatif");
         }
         this.kodeSampah = kodeSampah;
         this.namaKategori = namaKategori;
-        this.hargaBeliPerSatuan = hargaBeliPerSatuan;
         this.satuan = satuan;
+        this.hargaBeliPerSatuan = hargaBeliPerSatuan;
     }
 
-    /**
-     * Method abstrak untuk menghitung nilai rupiah subtotal berdasarkan jumlah kuantitas.
-     */
     public abstract double hitungNilaiSubtotal(double kuantitas);
 
     public void setHargaBeli(double hargaBaru) {
         if (hargaBaru <= 0) {
-            throw new IllegalArgumentException("Harga baru harus bernilai positif.");
+            throw new IllegalArgumentException("Harga beli baru harus positif");
         }
         this.hargaBeliPerSatuan = hargaBaru;
     }
 
-    public String getKodeSampah() {
-        return kodeSampah;
-    }
-
-    public String getNamaKategori() {
-        return namaKategori;
-    }
-
-    public double getHargaBeli() {
-        return hargaBeliPerSatuan;
-    }
-
-    public String getSatuan() {
-        return satuan;
-    }
+    public String getKodeSampah() { return kodeSampah; }
+    public String getNamaKategori() { return namaKategori; }
+    public double getHargaBeli() { return hargaBeliPerSatuan; }
+    public String getSatuan() { return satuan; }
 }
-

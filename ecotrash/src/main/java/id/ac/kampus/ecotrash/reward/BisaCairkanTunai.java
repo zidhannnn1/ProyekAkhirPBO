@@ -3,10 +3,10 @@ package id.ac.kampus.ecotrash.reward;
 import id.ac.kampus.ecotrash.model.NasabahWarga;
 
 /**
- * Interface kapabilitas untuk reward yang mendukung penarikan uang tunai.
- * Menerapkan prinsip Liskov Substitution Principle (LSP) dan Interface Segregation Principle (ISP).
+ * Kemampuan pencairan saldo tunai.
+ * Dipisah dari SkemaReward agar skema non-tunai (seperti poin) tidak dipaksa
+ * mengimplementasi operasi yang tidak relevan (ISP/LSP).
  */
 public interface BisaCairkanTunai {
     boolean cairkanTunai(NasabahWarga nasabah, double nominal);
 }
-

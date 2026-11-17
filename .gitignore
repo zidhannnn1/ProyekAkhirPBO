@@ -6,11 +6,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Maven
+# Maven & Java Build Output
 ecotrash/target/
+ecotrash/bin/
 
 # IDE
 .idea/
 .vscode/
 *.iml
-

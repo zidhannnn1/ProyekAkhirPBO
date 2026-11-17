@@ -1,11 +1,12 @@
 package id.ac.kampus.ecotrash.repository;
 
 import id.ac.kampus.ecotrash.model.TransaksiSetoran;
+
 import java.util.List;
 
 /**
- * Interface abstraksi untuk operasi penyimpanan dan pengambilan data transaksi setoran.
- * Menerapkan Dependency Inversion Principle (DIP).
+ * Abstraksi penyimpanan data transaksi setoran (DIP).
+ * Service layer bergantung pada interface ini, bukan implementasi konkret.
  */
 public interface TransaksiRepository {
     void simpan(TransaksiSetoran transaksi);
@@ -13,4 +14,3 @@ public interface TransaksiRepository {
     List<TransaksiSetoran> cariSemua();
     List<TransaksiSetoran> cariBerdasarkanRekeningNasabah(String nomorRekening);
 }
-

@@ -1,24 +1,24 @@
 package id.ac.kampus.ecotrash.model;
 
 /**
- * Spesialisasi kategori sampah anorganik padat (botol plastik, kardus, kaleng, dll).
+ * Sampah anorganik padat (plastik, kardus, logam) yang ditimbang dalam Kg.
+ * Grade pilah menentukan kualitas pemilahan oleh nasabah.
  */
 public class SampahAnorganik extends KategoriSampah {
-    private String gradePilah; // Misal: "A (Bersih)", "B (Campur)"
 
-    public SampahAnorganik(String kodeSampah, String namaKategori, double hargaBeliPerKg, String gradePilah) {
-        super(kodeSampah, namaKategori, hargaBeliPerKg, "Kg");
+    private final String gradePilah;
+
+    public SampahAnorganik(String kodeSampah, String namaKategori,
+                           double hargaBeliPerKg, String gradePilah) {
+        super(kodeSampah, namaKategori, "Kg", hargaBeliPerKg);
         this.gradePilah = gradePilah;
     }
 
     @Override
     public double hitungNilaiSubtotal(double beratKg) {
-        if (beratKg <= 0) return 0.0;
+        if (beratKg <= 0) return 0;
         return beratKg * getHargaBeli();
     }
 
-    public String getGradePilah() {
-        return gradePilah;
-    }
+    public String getGradePilah() { return gradePilah; }
 }
-

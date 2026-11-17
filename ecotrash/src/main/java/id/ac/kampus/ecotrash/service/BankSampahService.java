@@ -1,81 +1,135 @@
 package id.ac.kampus.ecotrash.service;
 
-import id.ac.kampus.ecotrash.model.DetailSetoran;
 import id.ac.kampus.ecotrash.model.NasabahWarga;
+import id.ac.kampus.ecotrash.model.PetugasBankSampah;
 import id.ac.kampus.ecotrash.model.TransaksiSetoran;
 import id.ac.kampus.ecotrash.repository.TransaksiRepository;
+import id.ac.kampus.ecotrash.reward.RewardTabunganRupiah;
 import id.ac.kampus.ecotrash.reward.SkemaReward;
+
 import java.util.List;
 
 /**
- * Service pengorkestrasi alur logika proses bisnis penimbangan sampah dan pembukuan.
- * Menerapkan prinsip Single Responsibility Principle (SRP) dan Dependency Inversion Principle (DIP).
+ * Orkestrasi proses bisnis bank sampah RT.
+ * Menerima dependensi melalui constructor injection (DIP) dan mendelegasikan
+ * persistensi serta notifikasi ke kolaborator masing-masing (SRP).
  */
 public class BankSampahService {
-    private final TransaksiRepository repo;
-    private final NotifikasiService notifikasi;
+
+    private final TransaksiRepository repository;
+    private final NotifikasiService notifikasiService;
+
+    public BankSampahService(TransaksiRepository repository, NotifikasiService notifikasiService) {
+        if (repository == null) {
+            throw new IllegalArgumentException("TransaksiRepository wajib disediakan.");
+        }
+        this.repository = repository;
+        this.notifikasiService = notifikasiService;
+    }
 
     /**
-     * Constructor Dependency Injection: bergantung pada abstraksi, bukan kelas konkret.
+     * Memproses setoran sampah: validasi, selesaikan transaksi dengan skema reward,
+     * simpan ke repository, dan kirim notifikasi jika tersedia.
      */
-    public BankSampahService(TransaksiRepository repo, NotifikasiService notifikasi) {
-        if (repo == null) {
-            throw new IllegalArgumentException("Repository tidak boleh null.");
+    public void prosesSetoran(TransaksiSetoran tx, SkemaReward skema) {
+        if (tx == null) {
+            throw new IllegalArgumentException("Transaksi tidak boleh null.");
         }
-        this.repo = repo;
-        this.notifikasi = notifikasi;
-    }
-
-    public void prosesSetoran(TransaksiSetoran transaksi, SkemaReward skema) {
-        if (transaksi == null || skema == null) {
-            throw new IllegalArgumentException("Transaksi dan Skema Reward harus terdefinisi.");
+        if (skema == null) {
+            throw new IllegalArgumentException("Skema reward harus dipilih.");
         }
 
-        transaksi.selesaikanTransaksi(skema);
-        repo.simpan(transaksi);
+        tx.selesaikanTransaksi(skema);
+        repository.simpan(tx);
 
-        if (notifikasi != null) {
+        if (notifikasiService != null) {
             String pesan = String.format(
-                "Halo %s, setoran Anda dengan kode %s berhasil diproses. Total nilai: Rp %,.0f melalui skema %s.",
-                transaksi.getNasabah().getNamaLengkap(),
-                transaksi.getKodeTransaksi(),
-                transaksi.hitungTotalNilai(),
-                skema.getNamaSkema()
-            );
-            notifikasi.kirimNotifikasi(transaksi.getNasabah().getNoTelepon(), pesan);
+                    "Setoran %s senilai Rp %.0f berhasil diproses dengan skema [%s].",
+                    tx.getKodeTransaksi(), tx.hitungTotalNilai(), skema.getNamaSkema());
+            notifikasiService.kirimNotifikasi(tx.getNasabah().getNoTelepon(), pesan);
         }
     }
 
+    /**
+     * Versi overloaded yang juga mencatat nama petugas penimbang.
+     */
+    public void prosesSetoran(TransaksiSetoran tx, SkemaReward skema, PetugasBankSampah petugas) {
+        if (tx == null) {
+            throw new IllegalArgumentException("Transaksi tidak boleh null.");
+        }
+        if (skema == null) {
+            throw new IllegalArgumentException("Skema reward harus dipilih.");
+        }
+
+        tx.selesaikanTransaksi(skema);
+        repository.simpan(tx);
+
+        if (notifikasiService != null) {
+            String namaPetugas = (petugas != null) ? petugas.getNamaLengkap() : "Tidak diketahui";
+            String pesan = String.format(
+                    "Setoran %s senilai Rp %.0f diproses oleh %s dengan skema [%s].",
+                    tx.getKodeTransaksi(), tx.hitungTotalNilai(), namaPetugas, skema.getNamaSkema());
+            notifikasiService.kirimNotifikasi(tx.getNasabah().getNoTelepon(), pesan);
+        }
+    }
+
+    /**
+     * Mencairkan saldo tunai nasabah menggunakan skema tabungan rupiah.
+     * Mengembalikan true jika pencairan berhasil (saldo mencukupi).
+     */
+    public boolean cairkanSaldoNasabah(NasabahWarga nasabah, double nominal) {
+        if (nasabah == null) {
+            throw new IllegalArgumentException("Nasabah tidak boleh null.");
+        }
+
+        RewardTabunganRupiah tabungan = new RewardTabunganRupiah();
+        boolean berhasil = tabungan.cairkanTunai(nasabah, nominal);
+
+        if (berhasil && notifikasiService != null) {
+            String pesan = String.format(
+                    "Pencairan tunai Rp %.0f berhasil. Sisa saldo: Rp %.0f.",
+                    nominal, nasabah.getSaldoTabungan());
+            notifikasiService.kirimNotifikasi(nasabah.getNoTelepon(), pesan);
+        }
+
+        return berhasil;
+    }
+
+    /**
+     * Total berat sampah (kg) dari seluruh transaksi berstatus SELESAI.
+     */
     public double hitungTotalTonaseKg() {
-        double totalKg = 0.0;
-        List<TransaksiSetoran> list = repo.cariSemua();
-        for (TransaksiSetoran t : list) {
-            if ("SELESAI".equalsIgnoreCase(t.getStatus())) {
-                for (DetailSetoran d : t.getDaftarItem()) {
-                    totalKg += d.getKuantitasTimbangan();
-                }
+        double total = 0.0;
+        for (TransaksiSetoran tx : repository.cariSemua()) {
+            if ("SELESAI".equals(tx.getStatus())) {
+                total += tx.hitungTotalBerat();
             }
         }
-        return totalKg;
+        return total;
     }
 
+    /**
+     * Total perputaran kas (rupiah) dari seluruh transaksi berstatus SELESAI.
+     */
     public double hitungTotalPerputaranKas() {
         double total = 0.0;
-        List<TransaksiSetoran> list = repo.cariSemua();
-        for (TransaksiSetoran t : list) {
-            if ("SELESAI".equalsIgnoreCase(t.getStatus())) {
-                total += t.hitungTotalNilai();
+        for (TransaksiSetoran tx : repository.cariSemua()) {
+            if ("SELESAI".equals(tx.getStatus())) {
+                total += tx.hitungTotalNilai();
             }
         }
         return total;
     }
 
     public List<TransaksiSetoran> getSemuaTransaksi() {
-        return repo.cariSemua();
+        return repository.cariSemua();
+    }
+
+    public List<TransaksiSetoran> cariTransaksiNasabah(String nomorRekening) {
+        return repository.cariBerdasarkanRekeningNasabah(nomorRekening);
     }
 
     public TransaksiRepository getRepository() {
-        return repo;
+        return repository;
     }
 }
-

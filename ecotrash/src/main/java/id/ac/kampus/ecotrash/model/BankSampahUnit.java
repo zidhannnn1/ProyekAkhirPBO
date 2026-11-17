@@ -3,17 +3,19 @@ package id.ac.kampus.ecotrash.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Entitas induk unit bank sampah pada tingkat komunitas / RT.
- * Memiliki hubungan Agregasi (◇) dengan KategoriSampah dan PetugasBankSampah
- * (objek diterima dari luar, siklus hidupnya independen).
+ * Unit bank sampah tingkat RT. Aggregation (◇) terhadap KategoriSampah
+ * dan PetugasBankSampah — objek-objek tersebut bisa hidup mandiri
+ * di luar unit ini.
  */
 public class BankSampahUnit {
-    private String namaUnit;
-    private String alamatRT;
-    private List<KategoriSampah> daftarKategori;
-    private List<PetugasBankSampah> daftarPetugas;
+
+    private final String namaUnit;
+    private final String alamatRT;
+    private final List<KategoriSampah> daftarKategori;
+    private final List<PetugasBankSampah> daftarPetugas;
 
     public BankSampahUnit(String namaUnit, String alamatRT) {
         this.namaUnit = namaUnit;
@@ -22,37 +24,31 @@ public class BankSampahUnit {
         this.daftarPetugas = new ArrayList<>();
     }
 
-    /**
-     * Menerima objek yang dibuat dari luar (Karakteristik Agregasi).
-     */
     public void tambahKategori(KategoriSampah kategori) {
-        if (kategori != null && !daftarKategori.contains(kategori)) {
+        if (kategori == null) return;
+        if (!daftarKategori.contains(kategori)) {
             daftarKategori.add(kategori);
         }
     }
 
     public void daftarkanPetugas(PetugasBankSampah petugas) {
-        if (petugas != null && !daftarPetugas.contains(petugas)) {
+        if (petugas == null) return;
+        if (!daftarPetugas.contains(petugas)) {
             daftarPetugas.add(petugas);
         }
     }
 
-    public KategoriSampah cariKategori(String kode) {
+    public Optional<KategoriSampah> cariKategori(String kode) {
         for (KategoriSampah k : daftarKategori) {
-            if (k.getKodeSampah().equalsIgnoreCase(kode)) {
-                return k;
+            if (k.getKodeSampah().equals(kode)) {
+                return Optional.of(k);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public String getNamaUnit() {
-        return namaUnit;
-    }
-
-    public String getAlamatRT() {
-        return alamatRT;
-    }
+    public String getNamaUnit() { return namaUnit; }
+    public String getAlamatRT() { return alamatRT; }
 
     public List<KategoriSampah> getDaftarKategori() {
         return Collections.unmodifiableList(daftarKategori);
@@ -62,4 +58,3 @@ public class BankSampahUnit {
         return Collections.unmodifiableList(daftarPetugas);
     }
 }
-

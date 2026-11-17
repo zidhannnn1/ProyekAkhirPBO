@@ -1,40 +1,34 @@
 package id.ac.kampus.ecotrash.model;
 
 /**
- * Komponen penyusun satu baris penimbangan dalam transaksi setoran.
- * Terikat dalam hubungan Komposisi penuh (◆) dengan TransaksiSetoran.
+ * Satu baris item timbangan dalam transaksi setoran.
+ * Merupakan Composition (◆) dari TransaksiSetoran — siklus hidup
+ * ditentukan oleh transaksi induk; tidak pernah dibuat secara mandiri.
  */
 public class DetailSetoran {
-    private KategoriSampah kategori;
-    private double kuantitasTimbangan;
-    private String catatanPilah;
 
-    public DetailSetoran(KategoriSampah kategori, double kuantitasTimbangan, String catatanPilah) {
+    private final KategoriSampah kategori;
+    private final double kuantitasTimbangan;
+    private final String catatanPilah;
+
+    DetailSetoran(KategoriSampah kategori, double kuantitasTimbangan,
+                  String catatanPilah) {
         if (kategori == null) {
-            throw new IllegalArgumentException("Kategori sampah tidak boleh null.");
+            throw new IllegalArgumentException("Kategori sampah tidak boleh null");
         }
         if (kuantitasTimbangan <= 0) {
-            throw new IllegalArgumentException("Kuantitas timbangan harus bernilai lebih dari 0.");
+            throw new IllegalArgumentException("Kuantitas timbangan harus positif");
         }
         this.kategori = kategori;
         this.kuantitasTimbangan = kuantitasTimbangan;
-        this.catatanPilah = catatanPilah != null ? catatanPilah : "Kondisi Standar";
+        this.catatanPilah = (catatanPilah == null) ? "Standar" : catatanPilah;
     }
 
     public double getSubtotal() {
         return kategori.hitungNilaiSubtotal(kuantitasTimbangan);
     }
 
-    public KategoriSampah getKategori() {
-        return kategori;
-    }
-
-    public double getKuantitasTimbangan() {
-        return kuantitasTimbangan;
-    }
-
-    public String getCatatanPilah() {
-        return catatanPilah;
-    }
+    public KategoriSampah getKategori() { return kategori; }
+    public double getKuantitasTimbangan() { return kuantitasTimbangan; }
+    public String getCatatanPilah() { return catatanPilah; }
 }
-

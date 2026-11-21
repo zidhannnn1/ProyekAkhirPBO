@@ -10,7 +10,14 @@ __pycache__/
 ecotrash/target/
 ecotrash/bin/
 
-# IDE
+# IDE & Editor
 .idea/
 .vscode/
 *.iml
+
+# Office Temp Files
+~$*.docx
+~$*.pptx
+~$*.xlsx
+*.tmp
+

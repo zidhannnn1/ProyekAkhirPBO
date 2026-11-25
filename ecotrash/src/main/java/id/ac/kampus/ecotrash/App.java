@@ -91,10 +91,10 @@ public class App {
                                             NasabahWarga siti, NasabahWarga ahmad) {
         System.out.println("\n>>> [DEMO FITUR 1] PENIMBANGAN, SETORAN & PENANGANAN GALAT");
         try {
-            KategoriSampah botol = unitRT.cariKategori("SMP01").orElseThrow();
-            KategoriSampah kardus = unitRT.cariKategori("SMP02").orElseThrow();
-            KategoriSampah aluminium = unitRT.cariKategori("SMP03").orElseThrow();
-            KategoriSampah jelantah = unitRT.cariKategori("SMP04").orElseThrow();
+            KategoriSampah botol = unitRT.ambilKategori("SMP01");
+            KategoriSampah kardus = unitRT.ambilKategori("SMP02");
+            KategoriSampah aluminium = unitRT.ambilKategori("SMP03");
+            KategoriSampah jelantah = unitRT.ambilKategori("SMP04");
 
             TransaksiSetoran tx1 = new TransaksiSetoran("TRX-2026-001", siti, LocalDate.now());
             tx1.tambahItem(botol, 2.0, "Setoran awal");
@@ -108,7 +108,7 @@ public class App {
             tx2.tambahItem(jelantah, 4.0, "Minyak jelantah saring");
             service.prosesSetoran(tx2, new RewardPoinSembako(), petugas);
             cli.cetakSlipSetoran(tx2);
-        } catch (TransaksiTidakValidException e) {
+        } catch (TransaksiTidakValidException | DataTidakDitemukanException e) {
             System.out.println("Ditangani: " + e.getMessage());
         }
 

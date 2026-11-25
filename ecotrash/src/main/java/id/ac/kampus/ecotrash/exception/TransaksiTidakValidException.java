@@ -6,6 +6,8 @@ package id.ac.kampus.ecotrash.exception;
  */
 public class TransaksiTidakValidException extends EcoTrashException {
 
+    private static final long serialVersionUID = 1L;
+
     private final String kodeTransaksi;
 
     public TransaksiTidakValidException(String kodeTransaksi, String pesan) {

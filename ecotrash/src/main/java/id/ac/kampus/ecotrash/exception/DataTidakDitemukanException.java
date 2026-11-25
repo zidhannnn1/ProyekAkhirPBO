@@ -5,6 +5,8 @@ package id.ac.kampus.ecotrash.exception;
  */
 public class DataTidakDitemukanException extends EcoTrashException {
 
+    private static final long serialVersionUID = 1L;
+
     private final String jenisData;
     private final String kunci;
 

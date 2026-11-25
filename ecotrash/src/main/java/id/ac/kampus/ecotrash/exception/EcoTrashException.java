@@ -6,6 +6,8 @@ package id.ac.kampus.ecotrash.exception;
  */
 public class EcoTrashException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     public EcoTrashException(String pesan) {
         super(pesan);
     }

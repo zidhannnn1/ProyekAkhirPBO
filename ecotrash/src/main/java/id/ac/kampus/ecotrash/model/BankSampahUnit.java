@@ -50,7 +50,8 @@ public class BankSampahUnit {
     }
 
     public KategoriSampah ambilKategori(String kode) throws DataTidakDitemukanException {
-        return cariKategori(kode).get();
+        return cariKategori(kode).orElseThrow(
+                () -> new DataTidakDitemukanException("KategoriSampah", kode));
     }
 
     public String getNamaUnit() { return namaUnit; }

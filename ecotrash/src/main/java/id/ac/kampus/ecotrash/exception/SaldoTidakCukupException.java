@@ -6,6 +6,8 @@ package id.ac.kampus.ecotrash.exception;
  */
 public class SaldoTidakCukupException extends EcoTrashException {
 
+    private static final long serialVersionUID = 1L;
+
     private final String nomorRekening;
     private final double diminta;
     private final double tersedia;

@@ -52,7 +52,6 @@ public class JUnit5ConsoleRunner {
                         System.out.println("[OK] " + parent + " :: " + descriptor.getDisplayName());
                     } else {
                         failed.incrementAndGet();
-                        String msg = result.getThrowable().map(Throwable::toString).orElse("Gagal");
                         System.out.println("[GAGAL] " + parent + " :: " + descriptor.getDisplayName());
                         StringBuilder sb = new StringBuilder();
                         sb.append("[GAGAL] ").append(parent).append(" :: ")
@@ -96,6 +95,7 @@ public class JUnit5ConsoleRunner {
             @Override
             public Optional<Boolean> getBoolean(String key) { return Optional.empty(); }
             @Override
+            @SuppressWarnings("deprecation")
             public int size() { return 0; }
             @Override
             public Set<String> keySet() { return Set.of(); }

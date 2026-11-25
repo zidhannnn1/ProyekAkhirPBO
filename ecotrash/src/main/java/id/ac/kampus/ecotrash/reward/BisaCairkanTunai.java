@@ -1,5 +1,6 @@
 package id.ac.kampus.ecotrash.reward;
 
+import id.ac.kampus.ecotrash.exception.SaldoTidakCukupException;
 import id.ac.kampus.ecotrash.model.NasabahWarga;
 
 /**
@@ -8,5 +9,5 @@ import id.ac.kampus.ecotrash.model.NasabahWarga;
  * mengimplementasi operasi yang tidak relevan (ISP/LSP).
  */
 public interface BisaCairkanTunai {
-    boolean cairkanTunai(NasabahWarga nasabah, double nominal);
+    void cairkanTunai(NasabahWarga nasabah, double nominal) throws SaldoTidakCukupException;
 }

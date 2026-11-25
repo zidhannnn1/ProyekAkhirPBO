@@ -1,5 +1,7 @@
 package id.ac.kampus.ecotrash.model;
 
+import id.ac.kampus.ecotrash.exception.DataTidakDitemukanException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +47,10 @@ public class BankSampahUnit {
             }
         }
         return Optional.empty();
+    }
+
+    public KategoriSampah ambilKategori(String kode) throws DataTidakDitemukanException {
+        return cariKategori(kode).get();
     }
 
     public String getNamaUnit() { return namaUnit; }

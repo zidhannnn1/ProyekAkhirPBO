@@ -1,5 +1,7 @@
 package id.ac.kampus.ecotrash.ui;
 
+import id.ac.kampus.ecotrash.exception.SaldoTidakCukupException;
+import id.ac.kampus.ecotrash.exception.TransaksiTidakValidException;
 import id.ac.kampus.ecotrash.model.*;
 import id.ac.kampus.ecotrash.reward.RewardPoinSembako;
 import id.ac.kampus.ecotrash.reward.RewardTabunganRupiah;
@@ -10,10 +12,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Antarmuka Command Line Interface (CLI) untuk interaksi konsol loket bank sampah.
- * Memisahkan presentation layer dari domain dan business service (Layered Architecture).
- */
 public class BankSampahCLI {
     private final BankSampahService service;
     private final BankSampahUnit unit;
@@ -25,8 +23,8 @@ public class BankSampahCLI {
 
     public void cetakBanner() {
         System.out.println("=================================================================");
-        System.out.println("       ECOTRASH — SISTEM PENGELOLAAN BANK SAMPAH RT KOMUNITAS    ");
-        System.out.println("                " + unit.getNamaUnit() + " - " + unit.getAlamatRT());
+        System.out.println("    ECOTRASH v4 — SISTEM PENGELOLAAN BANK SAMPAH RT KOMUNITAS   ");
+        System.out.println("          " + unit.getNamaUnit() + " - " + unit.getAlamatRT());
         System.out.println("=================================================================");
     }
 
@@ -40,6 +38,14 @@ public class BankSampahCLI {
                     k.getKodeSampah(), k.getNamaKategori(), k.getHargaBeli(), k.getSatuan());
         }
         System.out.println("-----------------------------------------------------------------");
+    }
+
+    /** Memakai bounded wildcard generics <? extends Pengguna> (Slide 18). */
+    public void cetakDaftarPengguna(List<? extends Pengguna> daftar) {
+        System.out.println("\n[DAFTAR PENGGUNA TERDAFTAR]");
+        for (Pengguna u : daftar) {
+            System.out.println("  - " + u.getNamaLengkap() + " (" + u.peran() + ")");
+        }
     }
 
     public void cetakSlipSetoran(TransaksiSetoran tx) {
@@ -63,7 +69,8 @@ public class BankSampahCLI {
                     d.getSubtotal());
         }
         System.out.println("+---------------------------------------------------------------+");
-        System.out.printf("| TOTAL TIMBANGAN : %6.2f Kg/Liter                               |\n", tx.hitungTotalBerat());
+        System.out.printf("| TOTAL TIMBANGAN : %6.2f Kg/Liter                               |\n",
+                tx.hitungTotalBerat());
         System.out.printf("| TOTAL NILAI KAS : Rp %,12.2f                                 |\n", tx.hitungTotalNilai());
         System.out.println("+---------------------------------------------------------------+");
     }
@@ -74,52 +81,46 @@ public class BankSampahCLI {
         System.out.printf("Total Timbangan Sampah Terkelola : %.2f Kg/Liter\n", service.hitungTotalTonaseKg());
         System.out.printf("Total Perputaran Nilai Kas Warga : Rp %,.2f\n", service.hitungTotalPerputaranKas());
         System.out.printf("Jumlah Transaksi Tercatat        : %d Transaksi\n", service.getSemuaTransaksi().size());
+        System.out.println("Rincian per Komoditas (Terurut)  : " + service.beratPerKategori());
         System.out.println("-----------------------------------------------------------------");
     }
 
     public void jalankanMenuInteraktif(Scanner scanner, List<NasabahWarga> daftarNasabah) {
         boolean berjalan = true;
         while (berjalan) {
-            System.out.println("\n>>> MENU OPERASIONAL KASIR BANK SAMPAH");
-            System.out.println("1. Lihat Katalog Komoditas & Tarif");
-            System.out.println("2. Input Penimbangan & Setoran Sampah (Fitur 1)");
-            System.out.println("3. Pencairan Saldo Kas Tunai Nasabah (Fitur 2)");
-            System.out.println("4. Lihat Saldo & Rekening Nasabah");
-            System.out.println("5. Lihat Rekapitulasi Pembukuan RT");
-            System.out.println("0. Selesai / Keluar");
-            System.out.print("Pilih opsi [0-5]: ");
-
+            cetakOpsiMenu();
             String input = scanner.nextLine().trim();
             switch (input) {
-                case "1":
-                    tampilkanKatalog();
-                    break;
-                case "2":
-                    prosesInputSetoranInteraktif(scanner, daftarNasabah);
-                    break;
-                case "3":
-                    prosesPencairanInteraktif(scanner, daftarNasabah);
-                    break;
-                case "4":
-                    tampilkanDaftarNasabah(daftarNasabah);
-                    break;
-                case "5":
-                    tampilkanRekapitulasi();
-                    break;
-                case "0":
+                case "1" -> tampilkanKatalog();
+                case "2" -> prosesInputSetoranInteraktif(scanner, daftarNasabah);
+                case "3" -> prosesPencairanInteraktif(scanner, daftarNasabah);
+                case "4" -> tampilkanDaftarNasabah(daftarNasabah);
+                case "5" -> tampilkanRekapitulasi();
+                case "0" -> {
                     berjalan = false;
                     System.out.println("Sesi kasir selesai. Terima kasih.");
-                    break;
-                default:
-                    System.out.println("Pilihan tidak valid, silakan ulangi.");
+                }
+                default -> System.out.println("Pilihan tidak valid, silakan ulangi.");
             }
         }
+    }
+
+    private void cetakOpsiMenu() {
+        System.out.println("\n>>> MENU OPERASIONAL KASIR BANK SAMPAH");
+        System.out.println("1. Lihat Katalog Komoditas & Tarif");
+        System.out.println("2. Input Penimbangan & Setoran Sampah (Fitur 1)");
+        System.out.println("3. Pencairan Saldo Kas Tunai Nasabah (Fitur 2)");
+        System.out.println("4. Lihat Saldo & Rekening Nasabah");
+        System.out.println("5. Lihat Rekapitulasi Pembukuan RT");
+        System.out.println("0. Selesai / Keluar");
+        System.out.print("Pilih opsi [0-5]: ");
     }
 
     private void tampilkanDaftarNasabah(List<NasabahWarga> daftarNasabah) {
         System.out.println("\n[BUKU TABUNGAN NASABAH WARGA]");
         System.out.println("-----------------------------------------------------------------");
-        System.out.printf("%-10s | %-20s | %-15s | %-10s\n", "Rekening", "Nama Warga", "Saldo Kas (Rp)", "Poin Sembako");
+        System.out.printf("%-10s | %-20s | %-15s | %-10s\n", "Rekening", "Nama Warga", "Saldo Kas (Rp)",
+                "Poin Sembako");
         System.out.println("-----------------------------------------------------------------");
         for (NasabahWarga n : daftarNasabah) {
             System.out.printf("%-10s | %-20s | Rp %,13.2f | %4d Poin\n",
@@ -128,18 +129,20 @@ public class BankSampahCLI {
         System.out.println("-----------------------------------------------------------------");
     }
 
-    private void prosesInputSetoranInteraktif(Scanner scanner, List<NasabahWarga> daftarNasabah) {
+    private NasabahWarga cariNasabahInteraktif(Scanner scanner, List<NasabahWarga> daftarNasabah) {
         tampilkanDaftarNasabah(daftarNasabah);
         System.out.print("Masukkan nomor rekening nasabah: ");
         String rek = scanner.nextLine().trim();
-
-        NasabahWarga nasabah = null;
         for (NasabahWarga n : daftarNasabah) {
             if (n.getNomorRekening().equalsIgnoreCase(rek)) {
-                nasabah = n;
-                break;
+                return n;
             }
         }
+        return null;
+    }
+
+    private void prosesInputSetoranInteraktif(Scanner scanner, List<NasabahWarga> daftarNasabah) {
+        NasabahWarga nasabah = cariNasabahInteraktif(scanner, daftarNasabah);
         if (nasabah == null) {
             System.out.println("[GAGAL] Nasabah dengan nomor rekening tersebut tidak ditemukan.");
             return;
@@ -147,15 +150,27 @@ public class BankSampahCLI {
 
         String kodeTx = "TRX-CLI-" + System.currentTimeMillis() % 10000;
         TransaksiSetoran tx = new TransaksiSetoran(kodeTx, nasabah, LocalDate.now());
-
         tampilkanKatalog();
+        inputItemSetoran(scanner, tx);
+
+        try {
+            SkemaReward skema = pilihSkemaInteraktif(scanner);
+            service.prosesSetoran(tx, skema);
+            cetakSlipSetoran(tx);
+            System.out.println("[SUKSES] Transaksi setoran berhasil disahkan dan saldo diperbarui.");
+        } catch (TransaksiTidakValidException e) {
+            System.out.println("[GAGAL BISNIS] " + e.getMessage());
+        }
+    }
+
+    private void inputItemSetoran(Scanner scanner, TransaksiSetoran tx) {
         boolean tambahLagi = true;
         while (tambahLagi) {
             System.out.print("Masukkan kode komoditas (misal SMP01): ");
             String kodeKategori = scanner.nextLine().trim();
             KategoriSampah kategori = unit.cariKategori(kodeKategori).orElse(null);
             if (kategori == null) {
-                System.out.println("[PERINGATAN] Kode komoditas tidak valid.");
+                System.out.println("[PERINGATAN] Kode komoditas tidak ditemukan.");
             } else {
                 System.out.print("Masukkan kuantitas timbangan (" + kategori.getSatuan() + "): ");
                 try {
@@ -163,43 +178,28 @@ public class BankSampahCLI {
                     tx.tambahItem(kategori, berat, "Penimbangan Loket");
                     System.out.printf("Item %s seberat %.2f %s berhasil ditambahkan.\n",
                             kategori.getNamaKategori(), berat, kategori.getSatuan());
-                } catch (Exception e) {
-                    System.out.println("[PERINGATAN] Format angka tidak valid.");
+                } catch (NumberFormatException e) {
+                    System.out.println("[PERINGATAN] Format angka tidak valid: " + e.getMessage());
+                } catch (IllegalArgumentException | TransaksiTidakValidException e) {
+                    System.out.println("[PERINGATAN] Input ditolak: " + e.getMessage());
                 }
             }
             System.out.print("Tambah komoditas lain? (y/n): ");
             tambahLagi = scanner.nextLine().trim().equalsIgnoreCase("y");
         }
+    }
 
-        if (tx.getDaftarItem().isEmpty()) {
-            System.out.println("[GAGAL] Tidak ada item penimbangan. Transaksi dibatalkan.");
-            return;
-        }
-
+    private SkemaReward pilihSkemaInteraktif(Scanner scanner) {
         System.out.println("Pilih skema reward:");
         System.out.println("1. Tabungan Kas Uang Tunai");
         System.out.println("2. Poin Belanja Sembako RT");
         System.out.print("Pilihan skema [1/2]: ");
         String skemaOpt = scanner.nextLine().trim();
-        SkemaReward skema = skemaOpt.equals("2") ? new RewardPoinSembako() : new RewardTabunganRupiah();
-
-        service.prosesSetoran(tx, skema);
-        cetakSlipSetoran(tx);
-        System.out.println("[SUKSES] Transaksi setoran berhasil disahkan dan saldo diperbarui.");
+        return "2".equals(skemaOpt) ? new RewardPoinSembako() : new RewardTabunganRupiah();
     }
 
     private void prosesPencairanInteraktif(Scanner scanner, List<NasabahWarga> daftarNasabah) {
-        tampilkanDaftarNasabah(daftarNasabah);
-        System.out.print("Masukkan nomor rekening nasabah: ");
-        String rek = scanner.nextLine().trim();
-
-        NasabahWarga nasabah = null;
-        for (NasabahWarga n : daftarNasabah) {
-            if (n.getNomorRekening().equalsIgnoreCase(rek)) {
-                nasabah = n;
-                break;
-            }
-        }
+        NasabahWarga nasabah = cariNasabahInteraktif(scanner, daftarNasabah);
         if (nasabah == null) {
             System.out.println("[GAGAL] Nasabah tidak ditemukan.");
             return;
@@ -209,15 +209,15 @@ public class BankSampahCLI {
         System.out.print("Masukkan nominal pencairan (Rp): ");
         try {
             double nominal = Double.parseDouble(scanner.nextLine().trim());
-            boolean berhasil = service.cairkanSaldoNasabah(nasabah, nominal);
-            if (berhasil) {
-                System.out.printf("[SUKSES] Uang tunai sebesar Rp %,.2f berhasil diserahkan ke nasabah.\n", nominal);
-                System.out.printf("Sisa saldo tabungan: Rp %,.2f\n", nasabah.getSaldoTabungan());
-            } else {
-                System.out.println("[GAGAL] Pencairan ditolak: Saldo tabungan nasabah tidak mencukupi.");
-            }
-        } catch (Exception e) {
-            System.out.println("[GAGAL] Terjadi kesalahan: " + e.getMessage());
+            service.cairkanSaldoNasabah(nasabah, nominal);
+            System.out.printf("[SUKSES] Uang tunai sebesar Rp %,.2f berhasil diserahkan ke nasabah.\n", nominal);
+            System.out.printf("Sisa saldo tabungan: Rp %,.2f\n", nasabah.getSaldoTabungan());
+        } catch (SaldoTidakCukupException e) {
+            System.out.printf("[GAGAL BISNIS] %s (kurang Rp %,.0f)\n", e.getMessage(), e.getKekurangan());
+        } catch (NumberFormatException e) {
+            System.out.println("[GAGAL] Format nominal bukan angka yang valid.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("[GAGAL] Input tidak valid: " + e.getMessage());
         }
     }
 }

@@ -1,0 +1,88 @@
+<mxfile host="Electron" modified="2026-11-25T18:45:00.000Z" agent="Antigravity" version="22.1.0" type="device">
+  <diagram id="EcoTrash_UML_v4" name="Class Diagram EcoTrash v4">
+    <mxGraphModel dx="1800" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- 1. Pengguna (Abstract Class) -->
+        <mxCell id="c_pengguna" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;abstract&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;Pengguna&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;# idPengguna: String&lt;br/&gt;# namaLengkap: String&lt;br/&gt;# noTelepon: String&lt;br/&gt;# nomorRT: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ peran()*: String&lt;br/&gt;+ getNamaLengkap(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1B4D3E;fontColor=#ffffff;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="30" width="260" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- 2. NasabahWarga -->
+        <mxCell id="c_nasabah" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;NasabahWarga&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- nomorRekening: String&lt;br/&gt;- saldoTabungan: double&lt;br/&gt;- poinReward: int&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ tambahSaldo(n: double): void&lt;br/&gt;+ kurangiSaldo(n: double): void {throws SaldoTidakCukupException}&lt;br/&gt;+ tambahPoin(p: int): void&lt;br/&gt;+ peran(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="230" width="320" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- 3. PetugasBankSampah -->
+        <mxCell id="c_petugas" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;PetugasBankSampah&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- nipPetugas: String&lt;br/&gt;- jabatan: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ peran(): String&lt;br/&gt;+ getNipPetugas(): String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="780" y="230" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- 4. BankSampahUnit -->
+        <mxCell id="c_unit" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;BankSampahUnit&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- namaUnit: String&lt;br/&gt;- alamatRT: String&lt;br/&gt;- daftarKategori: Set&amp;lt;KategoriSampah&amp;gt;&lt;br/&gt;- daftarPetugas: List&amp;lt;PetugasBankSampah&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ tambahKategori(k: KategoriSampah): boolean&lt;br/&gt;+ ambilKategori(kode: String): KategoriSampah {throws DataTidakDitemukanException}&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="230" width="350" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- 5. StatusTransaksi <<enumeration>> -->
+        <mxCell id="c_status" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;enumeration&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;StatusTransaksi&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;DIPROSES&lt;br/&gt;SELESAI&lt;br/&gt;DIBATALKAN&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#5B3A7D;fontColor=#ffffff;strokeColor=#5B3A7D;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="100" y="450" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- 6. TransaksiSetoran -->
+        <mxCell id="c_transaksi" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;TransaksiSetoran&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kodeTransaksi: String&lt;br/&gt;- nasabah: NasabahWarga&lt;br/&gt;- status: StatusTransaksi&lt;br/&gt;- daftarItem: Map&amp;lt;KategoriSampah, DetailSetoran&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ tambahItem(k, q, c): void&lt;br/&gt;+ selesaikanTransaksi(skema): void&lt;br/&gt;+ batalkan(): void&lt;br/&gt;- pastikanStatus(expected, aksi): void&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="380" y="450" width="320" height="175" as="geometry" />
+        </mxCell>
+
+        <!-- 7. DetailSetoran -->
+        <mxCell id="c_detail" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;DetailSetoran&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kategori: KategoriSampah&lt;br/&gt;- kuantitasTimbangan: double&lt;br/&gt;- catatanPilah: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;~ tambahKuantitas(t: double, c: String): void&lt;br/&gt;+ getSubtotal(): double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="390" y="700" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- 8. KategoriSampah (Abstract Class) -->
+        <mxCell id="c_kategori" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;abstract&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;KategoriSampah&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kodeSampah: String&lt;br/&gt;- namaKategori: String&lt;br/&gt;- hargaBeliPerSatuan: double&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ hitungNilaiSubtotal(q: double)*: double&lt;br/&gt;+ equals(o: Object): boolean&lt;br/&gt;+ hashCode(): int&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#1B4D3E;fontColor=#ffffff;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="450" width="290" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- 9. SampahAnorganik & MinyakJelantah -->
+        <mxCell id="c_anorganik" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;SampahAnorganik&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- gradePilah: String&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ hitungNilaiSubtotal(kg: double): double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="980" y="700" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="c_jelantah" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;MinyakJelantah&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kadarAsam: double&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ hitungNilaiSubtotal(liter: double): double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="700" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- 10. <<interface>> Repository<T, ID> & InMemoryRepository<T, ID> -->
+        <mxCell id="c_repo_iface" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;interface&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;Repository&amp;lt;T, ID&amp;gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ simpan(entitas: T)*: void&lt;br/&gt;+ cari(id: ID)*: Optional&amp;lt;T&amp;gt;&lt;br/&gt;+ ambil(id: ID)*: T {throws DataTidakDitemukanException}&lt;br/&gt;+ semua()*: List&amp;lt;T&amp;gt;&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#2E7D5E;fontColor=#ffffff;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="610" width="290" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c_repo_impl" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;InMemoryRepository&amp;lt;T, ID&amp;gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- data: Map&amp;lt;ID, T&amp;gt; = LinkedHashMap&lt;br/&gt;- pembuatKunci: Function&amp;lt;T, ID&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ simpan(T): void / ambil(ID): T&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#2E7D5E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="780" width="290" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- 11. Services: BankSampahService & KatalogService -->
+        <mxCell id="c_service" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;BankSampahService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- repository: Repository&amp;lt;TransaksiSetoran, String&amp;gt;&lt;br/&gt;- notifikasiService: NotifikasiService&lt;br/&gt;- skemaPencairan: BisaCairkanTunai&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ prosesSetoran(tx, skema, petugas): void&lt;br/&gt;+ cairkanSaldoNasabah(n, nom): void&lt;br/&gt;+ batalkanSetoran(kode): void&lt;br/&gt;+ beratPerKategori(): Map&amp;lt;String, Double&amp;gt;&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="210" width="310" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="c_katalog_svc" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;KatalogService&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kategoriRepo: Repository&amp;lt;KategoriSampah, String&amp;gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;+ imporCsv(berkas: Path): HasilImpor {throws IOException}&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#F4F8F6;fontColor=#2D3748;strokeColor=#1B4D3E;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="40" y="50" width="310" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- 12. Exception Hierarchy (Red package) -->
+        <mxCell id="c_exc_base" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;&amp;laquo;exception&amp;raquo;&lt;/b&gt;&lt;br&gt;&lt;b&gt;EcoTrashException&lt;/b&gt; extends Exception&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- serialVersionUID: long = 1L&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#B83232;fontColor=#ffffff;strokeColor=#8A1F1F;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="230" width="260" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="c_exc_saldo" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;SaldoTidakCukupException&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- nomorRekening: String&lt;br/&gt;- diminta, tersedia: double&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#FDF2F2;fontColor=#7B1A1A;strokeColor=#B83232;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="340" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="c_exc_data" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;DataTidakDitemukanException&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- jenisData, kunci: String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#FDF2F2;fontColor=#7B1A1A;strokeColor=#B83232;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="440" width="260" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="c_exc_tx" value="&lt;p style=&quot;margin:0px;text-align:center;&quot;&gt;&lt;b&gt;TransaksiTidakValidException&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;p style=&quot;margin:0px;margin-left:4px;text-align:left;&quot;&gt;- kodeTransaksi: String&lt;/p&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=#FDF2F2;fontColor=#7B1A1A;strokeColor=#B83232;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;align=center;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="530" width="260" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

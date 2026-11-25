@@ -1,8 +1,8 @@
 # EcoTrash: Sistem Pengelolaan Bank Sampah RT & Komunitas
 > Proyek Akhir Pemrograman Berorientasi Objek (PBO) — S1 Teknologi Informasi  
 > Dosen Pengampu: **Imam Adi Nata, S.Kom., M.Kom.**  
-> Topik: **Pengelolaan Bank Sampah RT Berbasis OOP & Prinsip SOLID (v3 — Implementasi)**  
-> Repositori: [https://github.com/zidhannnn1/ProyekAkhirPBO](https://github.com/zidhannnn1/ProyekAkhirPBO) (Rilis Tag: `v3`)
+> Topik: **Pengujian, Penanganan Kesalahan, dan Peningkatan Kualitas Aplikasi (v4 — Rilis Final)**  
+> Repositori: [https://github.com/zidhannnn1/ProyekAkhirPBO](https://github.com/zidhannnn1/ProyekAkhirPBO) (Rilis Tag: `v4`)
 
 ---
 
@@ -11,43 +11,58 @@
 ```text
 proyekakhir/
 ├── ecotrash/                            # Proyek Resmi Java SE (Maven & Executable JAR)
-│   ├── pom.xml                          # Konfigurasi Maven (Java 17 LTS, JUnit 5)
+│   ├── pom.xml                          # Konfigurasi Maven (Java 17 LTS, JUnit 5 Jupiter 5.10.0)
 │   ├── ecotrash.jar                     # Standalone Executable JAR (Main: id.ac.kampus.ecotrash.App)
+│   ├── data/
+│   │   └── katalog.csv                  # Dataset CSV Kategori Sampah (Try-with-resources)
 │   └── src/
 │       ├── main/java/id/ac/kampus/ecotrash/
 │       │   ├── model/                   # Domain Entities & Invariant Rules
 │       │   │   ├── Pengguna.java        # Abstract Class Induk
 │       │   │   ├── NasabahWarga.java    # Turunan Pengguna (Enkapsulasi Saldo & Poin)
 │       │   │   ├── PetugasBankSampah.java# Turunan Pengguna (Operasional Loket RT)
-│       │   │   ├── KategoriSampah.java  # Abstract Class Komoditas Sampah
+│       │   │   ├── KategoriSampah.java  # Abstract Class Komoditas Sampah (equals/hashCode)
 │       │   │   ├── SampahAnorganik.java # Turunan Kategori (Plastik, Kardus, Logam)
 │       │   │   ├── MinyakJelantah.java  # Turunan Kategori (Satuan Liter)
 │       │   │   ├── DetailSetoran.java   # Komposisi (◆) Transaksi
-│       │   │   ├── TransaksiSetoran.java# Pusat Proses Bisnis Setoran (◆ Komposisi)
-│       │   │   └── BankSampahUnit.java  # Agregasi (◇) Kategori & Petugas
+│       │   │   ├── TransaksiSetoran.java# Pusat Transaksi (◆ Komposisi, LinkedHashMap item)
+│       │   │   ├── BankSampahUnit.java  # Agregasi (◇) Kategori (LinkedHashSet) & Petugas
+│       │   │   └── StatusTransaksi.java # Enum Status (DIPROSES, SELESAI, DIBATALKAN)
+│       │   ├── exception/               # Custom Business Checked Exception Hierarchy
+│       │   │   ├── EcoTrashException.java            # Root Checked Exception
+│       │   │   ├── SaldoTidakCukupException.java      # Saldo Kurang (Eksplisit Kekurangan)
+│       │   │   ├── DataTidakDitemukanException.java   # Kunci/Data Tidak Ditemukan
+│       │   │   └── TransaksiTidakValidException.java  # Status/Aturan Transaksi Dilanggar
+│       │   ├── repository/              # Generic Persistence Layer (Generics & OCP)
+│       │   │   ├── Repository.java         # Interface Generic Repository<T, ID>
+│       │   │   └── InMemoryRepository.java # Implementasi Generic InMemory berbasis LinkedHashMap
 │       │   ├── reward/                  # Polimorfisme Skema Insentif (OCP & LSP)
 │       │   │   ├── SkemaReward.java     # Interface Skema Reward
 │       │   │   ├── BisaCairkanTunai.java# Interface Segregasi Penarikan Tunai (ISP/LSP)
 │       │   │   ├── RewardTabunganRupiah.java # Saldo Kas Tunai
 │       │   │   └── RewardPoinSembako.java   # Poin Belanja Sembako RT
-│       │   ├── repository/              # Abstraksi Persistensi Data (DIP)
-│       │   │   ├── TransaksiRepository.java # Interface Repository
-│       │   │   └── MemoryTransaksiRepository.java
 │       │   ├── service/                 # Logika Bisnis & Dependency Injection (SRP & DIP)
-│       │   │   ├── BankSampahService.java   # Orkestrator Setoran & Pencairan Kas
+│       │   │   ├── BankSampahService.java   # Orkestrator Setoran, Rollback & Laporan TreeMap
+│       │   │   ├── KatalogService.java      # Service Parsing CSV (Try-with-resources)
 │       │   │   └── NotifikasiService.java   # Interface Gateway Notifikasi
 │       │   ├── ui/                      # Presentation Layer
 │       │   │   └── BankSampahCLI.java   # Antarmuka Konsol & Cetak Slip Fisik
-│       │   └── App.java                 # Main Assembler (Composition Root)
+│       │   └── App.java                 # Main Assembler Modular (Composition Root)
 │       └── test/java/id/ac/kampus/ecotrash/
-│           └── KodeUjiSederhana.java    # Test Suite Mandiri 6 Skenario (Berhasil & Gagal)
+│           ├── NasabahWargaTest.java            # Test Unit EP & BVA Saldo (TC-01..TC-06)
+│           ├── KategoriDanTransaksiUnitTest.java# Test Unit Model, Koleksi & Generic Repo (TC-07..TC-13)
+│           ├── BankSampahIntegrasiTest.java     # Test Integrasi Alur Bisnis & CSV (TC-14..TC-19)
+│           └── JUnit5ConsoleRunner.java         # Standalone JUnit 5 Console Engine Runner
 │
 ├── run_app.sh                           # Shell script peluncur aplikasi konsol Java
-├── run_tests.sh                         # Shell script penjalan seluruh pengujian unit
+├── run_tests.sh                         # Shell script penjalan 19 Test Case JUnit 5 (100% Green)
 ├── web_app.py                           # Full-Stack Web Application Backend (Port 8080)
 ├── index.html                           # Frontend Antarmuka Loket Kasir Web
 ├── ecotrash_data.json                   # Penyimpanan Data Lokal Web App
-├── ecotrash_class_diagram_v2.drawio     # Berkas XML Class Diagram UML Draw.io
+├── Class Diagram v4.png                 # Diagram UML v4 Resolusi Tinggi (PNG)
+├── ecotrash_class_diagram_v4.drawio     # Berkas XML Class Diagram UML v4 Draw.io
+├── PBO_Proyek_Tim23_EcoTrash_v4.pdf     # Dokumen Resmi Laporan Pengujian & Perbaikan v4 (PDF)
+├── PBO_Proyek_Tim23_EcoTrash_v4.docx    # Dokumen Resmi Laporan Pengujian & Perbaikan v4 (DOCX)
 ├── PBO_Proyek_Tim23_EcoTrash_v3.pdf     # Dokumen Resmi Laporan Implementasi v3 (PDF)
 ├── PBO_Proyek_Tim23_EcoTrash_v3.docx    # Dokumen Resmi Laporan Implementasi v3 (DOCX)
 ├── PBO_Proyek_Tim23_EcoTrash.docx       # Dokumen Proposal Hidup & Bab Rancangan v2
@@ -74,10 +89,14 @@ Untuk berinteraksi langsung melalui terminal kasir:
 ./run_app.sh --interactive
 ```
 
-### 3. Menjalankan Seluruh Pengujian Unit (Test Suite Mandiri):
-Menguji 6 skenario (berhasil & gagal per fitur, enkapsulasi aturan bisnis, dan polimorfisme reward):
+### 3. Menjalankan Seluruh Pengujian Unit & Integrasi (JUnit 5 - 19 Test Cases):
+Menguji 19 skenario (Equivalence Partitioning & Boundary Value Analysis untuk saldo/pencairan kas, model, generic repository, serta pengujian integrasi alur setoran, rollback, dan impor CSV):
 ```bash
 ./run_tests.sh
+```
+Atau menggunakan Maven resmi (jika Maven terpasang di sistem):
+```bash
+cd ecotrash && mvn test
 ```
 
 ---
@@ -98,5 +117,5 @@ Aplikasi web dapat langsung diakses melalui peramban:
 ## 📊 Mengimpor Diagram Class ke Draw.io
 
 1. Buka [app.diagrams.net](https://app.diagrams.net).
-2. Pilih **File > Open From > Device**, lalu pilih berkas `ecotrash_class_diagram_v2.drawio`.
-3. Atau pilih **Extras > Edit Diagram**, salin seluruh teks dari `ecotrash_class_diagram_v2.drawio`, lalu klik **OK**.
+2. Pilih **File > Open From > Device**, lalu pilih berkas `ecotrash_class_diagram_v4.drawio`.
+3. Atau pilih **Extras > Edit Diagram**, salin seluruh teks dari `ecotrash_class_diagram_v4.drawio`, lalu klik **OK**.

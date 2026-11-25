@@ -8,8 +8,8 @@ package id.ac.kampus.ecotrash.model;
 public class DetailSetoran {
 
     private final KategoriSampah kategori;
-    private final double kuantitasTimbangan;
-    private final String catatanPilah;
+    private double kuantitasTimbangan;
+    private String catatanPilah;
 
     DetailSetoran(KategoriSampah kategori, double kuantitasTimbangan,
                   String catatanPilah) {
@@ -21,7 +21,18 @@ public class DetailSetoran {
         }
         this.kategori = kategori;
         this.kuantitasTimbangan = kuantitasTimbangan;
-        this.catatanPilah = (catatanPilah == null) ? "Standar" : catatanPilah;
+        this.catatanPilah = (catatanPilah == null || catatanPilah.isBlank()) ? "Standar" : catatanPilah;
+    }
+
+    /** Memungkinkan TransaksiSetoran menggabungkan timbangan kategori yang sama. */
+    void tambahKuantitas(double tambahan, String catatanBaru) {
+        if (tambahan <= 0) {
+            throw new IllegalArgumentException("Kuantitas tambahan harus positif");
+        }
+        this.kuantitasTimbangan += tambahan;
+        if (catatanBaru != null && !catatanBaru.isBlank() && !catatanBaru.equals(this.catatanPilah)) {
+            this.catatanPilah = this.catatanPilah + "; " + catatanBaru;
+        }
     }
 
     public double getSubtotal() {

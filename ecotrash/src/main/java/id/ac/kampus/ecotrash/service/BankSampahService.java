@@ -66,7 +66,16 @@ public class BankSampahService {
             throw new IllegalArgumentException("Skema reward harus dipilih.");
         }
 
-        tx.selesaikanTransaksi(skema);
+        try {
+            tx.selesaikanTransaksi(skema);
+        } catch (TransaksiTidakValidException e) {
+            if (tx.getStatus() != StatusTransaksi.DIBATALKAN) {
+                tx.batalkan();
+            }
+            kirimNotif(tx.getNasabah().getNoTelepon(),
+                    "Setoran " + tx.getKodeTransaksi() + " dibatalkan: " + e.getMessage());
+            throw e;
+        }
         repository.simpan(tx);
 
         String infoPetugas = (petugas != null) ? " oleh " + petugas.getNamaLengkap() : "";

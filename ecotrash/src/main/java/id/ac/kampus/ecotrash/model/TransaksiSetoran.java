@@ -42,6 +42,7 @@ public class TransaksiSetoran {
     /** Membuat atau menggabungkan DetailSetoran secara internal (Composition pattern). */
     public void tambahItem(KategoriSampah kategori, double kuantitas,
                            String catatan) throws TransaksiTidakValidException {
+        pastikanStatus(StatusTransaksi.DIPROSES, "menambah item");
         if (kategori == null) {
             throw new IllegalArgumentException("Kategori sampah tidak boleh null");
         }
@@ -73,10 +74,7 @@ public class TransaksiSetoran {
      * mengubah status menjadi SELESAI. Gagal jika belum ada item.
      */
     public void selesaikanTransaksi(SkemaReward skema) throws TransaksiTidakValidException {
-        if (this.status != StatusTransaksi.DIPROSES) {
-            throw new TransaksiTidakValidException(kodeTransaksi,
-                    "Transaksi sudah berstatus " + this.status);
-        }
+        pastikanStatus(StatusTransaksi.DIPROSES, "menyelesaikan transaksi");
         if (daftarItem.isEmpty()) {
             throw new TransaksiTidakValidException(kodeTransaksi,
                     "Transaksi tidak memiliki item setoran.");
@@ -87,6 +85,14 @@ public class TransaksiSetoran {
         skema.terapkanReward(this.nasabah, hitungTotalNilai());
         this.skemaDiterapkan = skema;
         this.status = StatusTransaksi.SELESAI;
+    }
+
+    private void pastikanStatus(StatusTransaksi yangDiharapkan, String aksi)
+            throws TransaksiTidakValidException {
+        if (this.status != yangDiharapkan) {
+            throw new TransaksiTidakValidException(kodeTransaksi,
+                    "Tidak dapat " + aksi + " karena status transaksi " + this.status);
+        }
     }
 
     public void batalkan() throws TransaksiTidakValidException {

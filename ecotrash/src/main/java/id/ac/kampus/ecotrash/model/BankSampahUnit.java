@@ -4,33 +4,32 @@ import id.ac.kampus.ecotrash.exception.DataTidakDitemukanException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Unit bank sampah tingkat RT. Aggregation (◇) terhadap KategoriSampah
- * dan PetugasBankSampah — objek-objek tersebut bisa hidup mandiri
- * di luar unit ini.
+ * dan PetugasBankSampah — menggunakan LinkedHashSet untuk mencegah duplikasi kategori.
  */
 public class BankSampahUnit {
 
     private final String namaUnit;
     private final String alamatRT;
-    private final List<KategoriSampah> daftarKategori;
+    private final Set<KategoriSampah> daftarKategori;
     private final List<PetugasBankSampah> daftarPetugas;
 
     public BankSampahUnit(String namaUnit, String alamatRT) {
         this.namaUnit = namaUnit;
         this.alamatRT = alamatRT;
-        this.daftarKategori = new ArrayList<>();
+        this.daftarKategori = new LinkedHashSet<>();
         this.daftarPetugas = new ArrayList<>();
     }
 
-    public void tambahKategori(KategoriSampah kategori) {
-        if (kategori == null) return;
-        if (!daftarKategori.contains(kategori)) {
-            daftarKategori.add(kategori);
-        }
+    public boolean tambahKategori(KategoriSampah kategori) {
+        if (kategori == null) return false;
+        return daftarKategori.add(kategori);
     }
 
     public void daftarkanPetugas(PetugasBankSampah petugas) {
@@ -41,6 +40,7 @@ public class BankSampahUnit {
     }
 
     public Optional<KategoriSampah> cariKategori(String kode) {
+        if (kode == null) return Optional.empty();
         for (KategoriSampah k : daftarKategori) {
             if (k.getKodeSampah().equals(kode)) {
                 return Optional.of(k);
@@ -57,7 +57,11 @@ public class BankSampahUnit {
     public String getAlamatRT() { return alamatRT; }
 
     public List<KategoriSampah> getDaftarKategori() {
-        return Collections.unmodifiableList(daftarKategori);
+        return Collections.unmodifiableList(new ArrayList<>(daftarKategori));
+    }
+
+    public Set<KategoriSampah> getHimpunanKategori() {
+        return Collections.unmodifiableSet(daftarKategori);
     }
 
     public List<PetugasBankSampah> getDaftarPetugas() {

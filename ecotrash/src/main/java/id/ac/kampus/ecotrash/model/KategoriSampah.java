@@ -1,9 +1,11 @@
 package id.ac.kampus.ecotrash.model;
 
+import java.util.Objects;
+
 /**
  * Basis abstrak untuk kategori sampah yang diterima bank sampah.
- * Setiap kategori memiliki kode unik, harga beli per satuan, dan
- * cara hitung subtotal yang spesifik per jenis sampah.
+ * Mengimplementasikan equals() dan hashCode() berbasis kodeSampah (atribut immutable)
+ * agar aman digunakan pada Set maupun sebagai kunci Map.
  */
 public abstract class KategoriSampah {
 
@@ -17,8 +19,14 @@ public abstract class KategoriSampah {
         if (kodeSampah == null || kodeSampah.isBlank()) {
             throw new IllegalArgumentException("kodeSampah tidak boleh kosong");
         }
-        if (hargaBeliPerSatuan < 0) {
-            throw new IllegalArgumentException("Harga beli tidak boleh negatif");
+        if (namaKategori == null || namaKategori.isBlank()) {
+            throw new IllegalArgumentException("namaKategori tidak boleh kosong");
+        }
+        if (satuan == null || satuan.isBlank()) {
+            throw new IllegalArgumentException("satuan tidak boleh kosong");
+        }
+        if (hargaBeliPerSatuan <= 0) {
+            throw new IllegalArgumentException("Harga beli harus lebih besar dari 0");
         }
         this.kodeSampah = kodeSampah;
         this.namaKategori = namaKategori;
@@ -33,6 +41,18 @@ public abstract class KategoriSampah {
             throw new IllegalArgumentException("Harga beli baru harus positif");
         }
         this.hargaBeliPerSatuan = hargaBaru;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof KategoriSampah other)) return false;
+        return Objects.equals(kodeSampah, other.kodeSampah);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kodeSampah);
     }
 
     public String getKodeSampah() { return kodeSampah; }

@@ -6,11 +6,14 @@ import id.ac.kampus.ecotrash.reward.SkemaReward;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Agregat transaksi setoran sampah nasabah.
- * Mengelola komposisi DetailSetoran dan siklus StatusTransaksi.
+ * Mengelola komposisi DetailSetoran (Map<KategoriSampah, DetailSetoran> agar
+ * kategori yang sama digabung otomatis) dan siklus StatusTransaksi.
  */
 public class TransaksiSetoran {
 
@@ -19,7 +22,7 @@ public class TransaksiSetoran {
     private final LocalDate tanggalSetor;
     private StatusTransaksi status;
     private SkemaReward skemaDiterapkan;
-    private final List<DetailSetoran> daftarItem;
+    private final Map<KategoriSampah, DetailSetoran> daftarItem;
 
     public TransaksiSetoran(String kodeTransaksi, NasabahWarga nasabah,
                             LocalDate tanggalSetor) {
@@ -33,10 +36,10 @@ public class TransaksiSetoran {
         this.nasabah = nasabah;
         this.tanggalSetor = (tanggalSetor != null) ? tanggalSetor : LocalDate.now();
         this.status = StatusTransaksi.DIPROSES;
-        this.daftarItem = new ArrayList<>();
+        this.daftarItem = new LinkedHashMap<>();
     }
 
-    /** Membuat DetailSetoran baru secara internal (Composition pattern). */
+    /** Membuat atau menggabungkan DetailSetoran secara internal (Composition pattern). */
     public void tambahItem(KategoriSampah kategori, double kuantitas,
                            String catatan) throws TransaksiTidakValidException {
         if (kategori == null) {
@@ -45,17 +48,22 @@ public class TransaksiSetoran {
         if (kuantitas <= 0) {
             throw new IllegalArgumentException("Kuantitas timbangan harus lebih besar dari 0");
         }
-        daftarItem.add(new DetailSetoran(kategori, kuantitas, catatan));
+        DetailSetoran existing = daftarItem.get(kategori);
+        if (existing != null) {
+            existing.tambahKuantitas(kuantitas, catatan);
+        } else {
+            daftarItem.put(kategori, new DetailSetoran(kategori, kuantitas, catatan));
+        }
     }
 
     public double hitungTotalNilai() {
-        return daftarItem.stream()
+        return daftarItem.values().stream()
                 .mapToDouble(DetailSetoran::getSubtotal)
                 .sum();
     }
 
     public double hitungTotalBerat() {
-        return daftarItem.stream()
+        return daftarItem.values().stream()
                 .mapToDouble(DetailSetoran::getKuantitasTimbangan)
                 .sum();
     }
@@ -110,6 +118,10 @@ public class TransaksiSetoran {
     }
 
     public List<DetailSetoran> getDaftarItem() {
-        return Collections.unmodifiableList(daftarItem);
+        return Collections.unmodifiableList(new ArrayList<>(daftarItem.values()));
+    }
+
+    public Map<KategoriSampah, DetailSetoran> getPetaItem() {
+        return Collections.unmodifiableMap(daftarItem);
     }
 }

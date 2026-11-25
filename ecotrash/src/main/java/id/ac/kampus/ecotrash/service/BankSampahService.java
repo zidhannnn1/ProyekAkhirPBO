@@ -1,37 +1,64 @@
 package id.ac.kampus.ecotrash.service;
 
+import id.ac.kampus.ecotrash.exception.DataTidakDitemukanException;
+import id.ac.kampus.ecotrash.exception.SaldoTidakCukupException;
+import id.ac.kampus.ecotrash.exception.TransaksiTidakValidException;
+import id.ac.kampus.ecotrash.model.DetailSetoran;
 import id.ac.kampus.ecotrash.model.NasabahWarga;
 import id.ac.kampus.ecotrash.model.PetugasBankSampah;
+import id.ac.kampus.ecotrash.model.StatusTransaksi;
 import id.ac.kampus.ecotrash.model.TransaksiSetoran;
-import id.ac.kampus.ecotrash.repository.TransaksiRepository;
+import id.ac.kampus.ecotrash.repository.Repository;
+import id.ac.kampus.ecotrash.reward.BisaCairkanTunai;
 import id.ac.kampus.ecotrash.reward.RewardTabunganRupiah;
 import id.ac.kampus.ecotrash.reward.SkemaReward;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Orkestrasi proses bisnis bank sampah RT.
- * Menerima dependensi melalui constructor injection (DIP) dan mendelegasikan
- * persistensi serta notifikasi ke kolaborator masing-masing (SRP).
+ * Menerima dependensi generik dan abstraksi melalui constructor injection (DIP).
  */
 public class BankSampahService {
 
-    private final TransaksiRepository repository;
+    private final Repository<TransaksiSetoran, String> repository;
     private final NotifikasiService notifikasiService;
+    private final BisaCairkanTunai skemaPencairan;
 
-    public BankSampahService(TransaksiRepository repository, NotifikasiService notifikasiService) {
+    public BankSampahService(Repository<TransaksiSetoran, String> repository,
+                             NotifikasiService notifikasiService) {
+        this(repository, notifikasiService, new RewardTabunganRupiah());
+    }
+
+    public BankSampahService(Repository<TransaksiSetoran, String> repository,
+                             NotifikasiService notifikasiService,
+                             BisaCairkanTunai skemaPencairan) {
         if (repository == null) {
-            throw new IllegalArgumentException("TransaksiRepository wajib disediakan.");
+            throw new IllegalArgumentException("Repository transaksi wajib disediakan.");
+        }
+        if (skemaPencairan == null) {
+            throw new IllegalArgumentException("Skema pencairan tunai wajib disediakan.");
         }
         this.repository = repository;
         this.notifikasiService = notifikasiService;
+        this.skemaPencairan = skemaPencairan;
+    }
+
+    public void prosesSetoran(TransaksiSetoran tx, SkemaReward skema)
+            throws TransaksiTidakValidException {
+        prosesSetoran(tx, skema, null);
     }
 
     /**
-     * Memproses setoran sampah: validasi, selesaikan transaksi dengan skema reward,
-     * simpan ke repository, dan kirim notifikasi jika tersedia.
+     * Memproses setoran sampah: validasi, terapkan skema reward, simpan ke repository,
+     * dan kirim notifikasi. Jika gagal karena aturan transaksi, kirim notifikasi galat
+     * dan lempar ulang exception ke pemanggil (tangkap, bersihkan, lempar ulang).
      */
-    public void prosesSetoran(TransaksiSetoran tx, SkemaReward skema) {
+    public void prosesSetoran(TransaksiSetoran tx, SkemaReward skema, PetugasBankSampah petugas)
+            throws TransaksiTidakValidException {
         if (tx == null) {
             throw new IllegalArgumentException("Transaksi tidak boleh null.");
         }
@@ -42,94 +69,103 @@ public class BankSampahService {
         tx.selesaikanTransaksi(skema);
         repository.simpan(tx);
 
-        if (notifikasiService != null) {
-            String pesan = String.format(
-                    "Setoran %s senilai Rp %.0f berhasil diproses dengan skema [%s].",
-                    tx.getKodeTransaksi(), tx.hitungTotalNilai(), skema.getNamaSkema());
-            notifikasiService.kirimNotifikasi(tx.getNasabah().getNoTelepon(), pesan);
-        }
+        String infoPetugas = (petugas != null) ? " oleh " + petugas.getNamaLengkap() : "";
+        String pesan = String.format(
+                "Setoran %s senilai Rp %.0f berhasil diproses%s dengan skema [%s].",
+                tx.getKodeTransaksi(), tx.hitungTotalNilai(), infoPetugas, skema.getNamaSkema());
+        kirimNotif(tx.getNasabah().getNoTelepon(), pesan);
     }
 
     /**
-     * Versi overloaded yang juga mencatat nama petugas penimbang.
+     * Mencairkan saldo tunai nasabah. Melempar SaldoTidakCukupException jika saldo kurang,
+     * setelah mencatat pesan penolakan ke layanan notifikasi.
      */
-    public void prosesSetoran(TransaksiSetoran tx, SkemaReward skema, PetugasBankSampah petugas) {
-        if (tx == null) {
-            throw new IllegalArgumentException("Transaksi tidak boleh null.");
-        }
-        if (skema == null) {
-            throw new IllegalArgumentException("Skema reward harus dipilih.");
-        }
-
-        tx.selesaikanTransaksi(skema);
-        repository.simpan(tx);
-
-        if (notifikasiService != null) {
-            String namaPetugas = (petugas != null) ? petugas.getNamaLengkap() : "Tidak diketahui";
-            String pesan = String.format(
-                    "Setoran %s senilai Rp %.0f diproses oleh %s dengan skema [%s].",
-                    tx.getKodeTransaksi(), tx.hitungTotalNilai(), namaPetugas, skema.getNamaSkema());
-            notifikasiService.kirimNotifikasi(tx.getNasabah().getNoTelepon(), pesan);
-        }
-    }
-
-    /**
-     * Mencairkan saldo tunai nasabah menggunakan skema tabungan rupiah.
-     * Mengembalikan true jika pencairan berhasil (saldo mencukupi).
-     */
-    public boolean cairkanSaldoNasabah(NasabahWarga nasabah, double nominal) {
+    public void cairkanSaldoNasabah(NasabahWarga nasabah, double nominal)
+            throws SaldoTidakCukupException {
         if (nasabah == null) {
             throw new IllegalArgumentException("Nasabah tidak boleh null.");
         }
 
-        RewardTabunganRupiah tabungan = new RewardTabunganRupiah();
-        boolean berhasil = tabungan.cairkanTunai(nasabah, nominal);
-
-        if (berhasil && notifikasiService != null) {
-            String pesan = String.format(
-                    "Pencairan tunai Rp %.0f berhasil. Sisa saldo: Rp %.0f.",
-                    nominal, nasabah.getSaldoTabungan());
-            notifikasiService.kirimNotifikasi(nasabah.getNoTelepon(), pesan);
+        try {
+            skemaPencairan.cairkanTunai(nasabah, nominal);
+        } catch (SaldoTidakCukupException e) {
+            kirimNotif(nasabah.getNoTelepon(), "Pencairan ditolak: " + e.getMessage());
+            throw e;
         }
 
-        return berhasil;
+        String pesan = String.format(
+                "Pencairan tunai Rp %.0f berhasil. Sisa saldo: Rp %.0f.",
+                nominal, nasabah.getSaldoTabungan());
+        kirimNotif(nasabah.getNoTelepon(), pesan);
     }
 
     /**
-     * Total berat sampah (kg) dari seluruh transaksi berstatus SELESAI.
+     * Membatalkan transaksi yang sudah selesai (misal salah input kasir) dan
+     * mengembalikan saldo tabungan kas nasabah apabila menggunakan tabungan rupiah.
      */
+    public void batalkanSetoran(String kodeTransaksi)
+            throws DataTidakDitemukanException, TransaksiTidakValidException, SaldoTidakCukupException {
+        TransaksiSetoran tx = repository.ambil(kodeTransaksi);
+        if (tx.getStatus() == StatusTransaksi.DIBATALKAN) {
+            throw new TransaksiTidakValidException(kodeTransaksi, "Transaksi sudah dibatalkan sebelumnya.");
+        }
+        if (tx.getStatus() == StatusTransaksi.SELESAI
+                && tx.getSkemaDiterapkan() instanceof BisaCairkanTunai pencairan) {
+            pencairan.cairkanTunai(tx.getNasabah(), tx.hitungTotalNilai());
+        }
+        tx.batalkan();
+        kirimNotif(tx.getNasabah().getNoTelepon(),
+                "Setoran " + kodeTransaksi + " dibatalkan dan saldo disesuaikan.");
+    }
+
+    public TransaksiSetoran ambilTransaksi(String kodeTransaksi) throws DataTidakDitemukanException {
+        return repository.ambil(kodeTransaksi);
+    }
+
+    public Map<String, Double> beratPerKategori() {
+        return repository.semua().stream()
+                .filter(tx -> tx.getStatus() == StatusTransaksi.SELESAI)
+                .flatMap(tx -> tx.getDaftarItem().stream())
+                .collect(Collectors.groupingBy(
+                        item -> item.getKategori().getNamaKategori(),
+                        TreeMap::new,
+                        Collectors.summingDouble(DetailSetoran::getKuantitasTimbangan)));
+    }
+
     public double hitungTotalTonaseKg() {
-        double total = 0.0;
-        for (TransaksiSetoran tx : repository.cariSemua()) {
-            if ("SELESAI".equals(tx.getStatus())) {
-                total += tx.hitungTotalBerat();
-            }
-        }
-        return total;
+        return repository.semua().stream()
+                .filter(tx -> tx.getStatus() == StatusTransaksi.SELESAI)
+                .mapToDouble(TransaksiSetoran::hitungTotalBerat)
+                .sum();
     }
 
-    /**
-     * Total perputaran kas (rupiah) dari seluruh transaksi berstatus SELESAI.
-     */
     public double hitungTotalPerputaranKas() {
-        double total = 0.0;
-        for (TransaksiSetoran tx : repository.cariSemua()) {
-            if ("SELESAI".equals(tx.getStatus())) {
-                total += tx.hitungTotalNilai();
-            }
-        }
-        return total;
+        return repository.semua().stream()
+                .filter(tx -> tx.getStatus() == StatusTransaksi.SELESAI)
+                .mapToDouble(TransaksiSetoran::hitungTotalNilai)
+                .sum();
     }
 
     public List<TransaksiSetoran> getSemuaTransaksi() {
-        return repository.cariSemua();
+        return repository.semua();
     }
 
     public List<TransaksiSetoran> cariTransaksiNasabah(String nomorRekening) {
-        return repository.cariBerdasarkanRekeningNasabah(nomorRekening);
+        if (nomorRekening == null) {
+            return List.of();
+        }
+        return repository.semua().stream()
+                .filter(tx -> nomorRekening.equals(tx.getNasabah().getNomorRekening()))
+                .collect(Collectors.toList());
     }
 
-    public TransaksiRepository getRepository() {
+    public Repository<TransaksiSetoran, String> getRepository() {
         return repository;
+    }
+
+    private void kirimNotif(String noTelepon, String pesan) {
+        if (notifikasiService != null) {
+            notifikasiService.kirimNotifikasi(noTelepon, pesan);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package id.ac.kampus.ecotrash.reward;
 
+import id.ac.kampus.ecotrash.exception.SaldoTidakCukupException;
 import id.ac.kampus.ecotrash.model.NasabahWarga;
 
 /**
@@ -19,11 +20,11 @@ public class RewardTabunganRupiah implements SkemaReward, BisaCairkanTunai {
     }
 
     @Override
-    public boolean cairkanTunai(NasabahWarga nasabah, double nominal) {
+    public void cairkanTunai(NasabahWarga nasabah, double nominal) throws SaldoTidakCukupException {
         if (nasabah == null) {
             throw new IllegalArgumentException("Nasabah tidak boleh null.");
         }
-        return nasabah.kurangiSaldo(nominal);
+        nasabah.kurangiSaldo(nominal);
     }
 
     @Override

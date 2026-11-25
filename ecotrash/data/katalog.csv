@@ -1,0 +1,8 @@
+# Katalog Tarif Pembelian Sampah Terpilah Bank Sampah RT
+# Format: KODE;JENIS;NAMA_KATEGORI;HARGA_BELI;ATRIBUT_KHUSUS
+SMP01;ANORGANIK;Botol Plastik PET Bening;4500;Grade A
+SMP02;ANORGANIK;Kardus Bekas / Box Cokelat;2500;Grade A
+SMP05;ANORGANIK;Plastik Rusak Contoh;abc;Grade B
+SMP06;ANORGANIK;Kolom Kurang Contoh;3000
+SMP03;ANORGANIK;Kaleng Minuman Aluminium;12000;Grade A
+SMP04;JELANTAH;Minyak Jelantah Rumah Tangga;6500;1.2

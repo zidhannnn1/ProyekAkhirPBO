@@ -1,5 +1,6 @@
 package id.ac.kampus.ecotrash.model;
 
+import id.ac.kampus.ecotrash.exception.TransaksiTidakValidException;
 import id.ac.kampus.ecotrash.reward.SkemaReward;
 
 import java.time.LocalDate;
@@ -8,16 +9,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Transaksi penyetoran sampah oleh nasabah.
- * Memiliki Composition (◆) terhadap DetailSetoran — item hanya
- * dibuat melalui {@link #tambahItem} dan tidak bisa hidup di luar transaksi.
+ * Agregat transaksi setoran sampah nasabah.
+ * Mengelola komposisi DetailSetoran dan siklus StatusTransaksi.
  */
 public class TransaksiSetoran {
 
     private final String kodeTransaksi;
     private final NasabahWarga nasabah;
     private final LocalDate tanggalSetor;
-    private String status;
+    private StatusTransaksi status;
+    private SkemaReward skemaDiterapkan;
     private final List<DetailSetoran> daftarItem;
 
     public TransaksiSetoran(String kodeTransaksi, NasabahWarga nasabah,
@@ -31,13 +32,13 @@ public class TransaksiSetoran {
         this.kodeTransaksi = kodeTransaksi;
         this.nasabah = nasabah;
         this.tanggalSetor = (tanggalSetor != null) ? tanggalSetor : LocalDate.now();
-        this.status = "DIPROSES";
+        this.status = StatusTransaksi.DIPROSES;
         this.daftarItem = new ArrayList<>();
     }
 
     /** Membuat DetailSetoran baru secara internal (Composition pattern). */
     public void tambahItem(KategoriSampah kategori, double kuantitas,
-                           String catatan) {
+                           String catatan) throws TransaksiTidakValidException {
         if (kategori == null) {
             throw new IllegalArgumentException("Kategori sampah tidak boleh null");
         }
@@ -48,40 +49,66 @@ public class TransaksiSetoran {
     }
 
     public double hitungTotalNilai() {
-        double total = 0;
-        for (DetailSetoran item : daftarItem) {
-            total += item.getSubtotal();
-        }
-        return total;
+        return daftarItem.stream()
+                .mapToDouble(DetailSetoran::getSubtotal)
+                .sum();
     }
 
     public double hitungTotalBerat() {
-        double total = 0;
-        for (DetailSetoran item : daftarItem) {
-            total += item.getKuantitasTimbangan();
-        }
-        return total;
+        return daftarItem.stream()
+                .mapToDouble(DetailSetoran::getKuantitasTimbangan)
+                .sum();
     }
 
     /**
      * Menyelesaikan transaksi: menghitung reward via skema, lalu
      * mengubah status menjadi SELESAI. Gagal jika belum ada item.
      */
-    public void selesaikanTransaksi(SkemaReward skema) {
+    public void selesaikanTransaksi(SkemaReward skema) throws TransaksiTidakValidException {
+        if (this.status != StatusTransaksi.DIPROSES) {
+            throw new TransaksiTidakValidException(kodeTransaksi,
+                    "Transaksi sudah berstatus " + this.status);
+        }
         if (daftarItem.isEmpty()) {
-            throw new IllegalStateException("Transaksi tidak memiliki item setoran");
+            throw new TransaksiTidakValidException(kodeTransaksi,
+                    "Transaksi tidak memiliki item setoran.");
         }
         if (skema == null) {
             throw new IllegalArgumentException("SkemaReward tidak boleh null");
         }
         skema.terapkanReward(this.nasabah, hitungTotalNilai());
-        this.status = "SELESAI";
+        this.skemaDiterapkan = skema;
+        this.status = StatusTransaksi.SELESAI;
     }
 
-    public String getKodeTransaksi() { return kodeTransaksi; }
-    public NasabahWarga getNasabah() { return nasabah; }
-    public LocalDate getTanggalSetor() { return tanggalSetor; }
-    public String getStatus() { return status; }
+    public void batalkan() throws TransaksiTidakValidException {
+        if (this.status == StatusTransaksi.DIBATALKAN) {
+            throw new TransaksiTidakValidException(kodeTransaksi,
+                    "Transaksi sudah berstatus DIBATALKAN.");
+        }
+        this.status = StatusTransaksi.DIBATALKAN;
+    }
+
+    public String getKodeTransaksi() {
+        return kodeTransaksi;
+    }
+
+    public NasabahWarga getNasabah() {
+        return nasabah;
+    }
+
+    public LocalDate getTanggalSetor() {
+        return tanggalSetor;
+    }
+
+    public StatusTransaksi getStatus() {
+        return status;
+    }
+
+    public SkemaReward getSkemaDiterapkan() {
+        return skemaDiterapkan;
+    }
+
     public List<DetailSetoran> getDaftarItem() {
         return Collections.unmodifiableList(daftarItem);
     }

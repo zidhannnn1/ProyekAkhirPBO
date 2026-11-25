@@ -1,5 +1,7 @@
 package id.ac.kampus.ecotrash.model;
 
+import id.ac.kampus.ecotrash.exception.SaldoTidakCukupException;
+
 /**
  * Warga RT yang menabung sampah terpilah ke bank sampah.
  * Memiliki saldo tabungan dan poin reward yang bermutasi melalui transaksi.
@@ -29,16 +31,19 @@ public class NasabahWarga extends Pengguna {
         this.saldoTabungan += nominal;
     }
 
-    /** @return false jika saldo tidak mencukupi */
-    public boolean kurangiSaldo(double nominal) {
+    /**
+     * Mengurangi saldo tabungan nasabah saat penarikan kas atau pembatalan setoran.
+     * Melempar IllegalArgumentException bila nominal <= 0 (kesalahan argumen),
+     * dan melempar SaldoTidakCukupException bila saldo tidak mencukupi (kesalahan bisnis).
+     */
+    public void kurangiSaldo(double nominal) throws SaldoTidakCukupException {
         if (nominal <= 0) {
             throw new IllegalArgumentException("Nominal kurangi saldo harus positif");
         }
         if (nominal > saldoTabungan) {
-            return false;
+            throw new SaldoTidakCukupException(nomorRekening, nominal, saldoTabungan);
         }
         this.saldoTabungan -= nominal;
-        return true;
     }
 
     public void tambahPoin(int poin) {

@@ -1,114 +1,159 @@
 package id.ac.kampus.ecotrash;
 
+import id.ac.kampus.ecotrash.exception.DataTidakDitemukanException;
+import id.ac.kampus.ecotrash.exception.SaldoTidakCukupException;
+import id.ac.kampus.ecotrash.exception.TransaksiTidakValidException;
 import id.ac.kampus.ecotrash.model.*;
-import id.ac.kampus.ecotrash.repository.MemoryTransaksiRepository;
-import id.ac.kampus.ecotrash.repository.TransaksiRepository;
+import id.ac.kampus.ecotrash.repository.InMemoryRepository;
+import id.ac.kampus.ecotrash.repository.Repository;
 import id.ac.kampus.ecotrash.reward.RewardPoinSembako;
 import id.ac.kampus.ecotrash.reward.RewardTabunganRupiah;
-import id.ac.kampus.ecotrash.reward.SkemaReward;
 import id.ac.kampus.ecotrash.service.BankSampahService;
+import id.ac.kampus.ecotrash.service.KatalogService;
 import id.ac.kampus.ecotrash.service.NotifikasiService;
 import id.ac.kampus.ecotrash.ui.BankSampahCLI;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 /**
- * Main Class Assembler (Composition Root).
- * Menghubungkan seluruh dependensi objek melalui Dependency Injection (DIP).
- * Mengimplementasikan 2 fitur utama berjalan (Fitur 1: Setoran Sampah,
- * Fitur 2: Pencairan Kas) sesuai rubrik penilaian Pertemuan 11.
+ * Main Class Assembler (Composition Root) EcoTrash v4.
+ * Method main() dipecah menjadi method terfokus agar tetap ringkas dan terukur.
  */
 public class App {
 
     public static void main(String[] args) {
-        // Inisialisasi Unit Bank Sampah RT (Agregasi)
         BankSampahUnit unitRT = new BankSampahUnit(
                 "Bank Sampah Berkah Mandiri",
-                "RT 04 / RW 02 Kelurahan Sukamaju"
-        );
+                "RT 04 / RW 02 Kelurahan Sukamaju");
 
-        // Registrasi Master Kategori Komoditas Sampah (Inheritance dari KategoriSampah)
-        SampahAnorganik botolPlastik = new SampahAnorganik("SMP01", "Botol Plastik PET Bening", 4500, "Grade A");
-        SampahAnorganik kardus = new SampahAnorganik("SMP02", "Kardus Bekas / Box Cokelat", 2500, "Grade A");
-        SampahAnorganik kalengAluminium = new SampahAnorganik("SMP03", "Kaleng Minuman Aluminium", 12000, "Grade A");
-        MinyakJelantah jelantah = new MinyakJelantah("SMP04", 6500, 1.2);
+        Repository<KategoriSampah, String> kategoriRepo = new InMemoryRepository<>("KategoriSampah",
+                KategoriSampah::getKodeSampah);
+        Repository<TransaksiSetoran, String> transaksiRepo = new InMemoryRepository<>("TransaksiSetoran",
+                TransaksiSetoran::getKodeTransaksi);
 
-        unitRT.tambahKategori(botolPlastik);
-        unitRT.tambahKategori(kardus);
-        unitRT.tambahKategori(kalengAluminium);
-        unitRT.tambahKategori(jelantah);
+        NotifikasiService notifikasi = (telepon, pesan) -> System.out
+                .println("[NOTIFIKASI ke " + telepon + "]: " + pesan);
 
-        // Registrasi Petugas Operasional Kasir
+        KatalogService katalogService = new KatalogService(kategoriRepo);
+        BankSampahService service = new BankSampahService(transaksiRepo, notifikasi, new RewardTabunganRupiah());
+        BankSampahCLI cli = new BankSampahCLI(service, unitRT);
+
+        cli.cetakBanner();
+        demoImporKatalog(katalogService, kategoriRepo, unitRT);
+        cli.tampilkanKatalog();
+
         PetugasBankSampah petugasBudi = new PetugasBankSampah(
-                "PTG01", "Budi Santoso", "081234567890", "04", "NIP-RT04-01", "Petugas Loket"
-        );
+                "PTG01", "Budi Santoso", "081234567890", "04", "NIP-RT04-01", "Petugas Loket");
         unitRT.daftarkanPetugas(petugasBudi);
 
-        // Inisialisasi Data Nasabah Warga RT
         NasabahWarga nasabahSiti = new NasabahWarga("NSB01", "Ibu Siti Aminah", "081298765432", "04", "REK-04-012");
         NasabahWarga nasabahAhmad = new NasabahWarga("NSB02", "Pak Ahmad Fauzi", "081311223344", "04", "REK-04-018");
         List<NasabahWarga> daftarNasabah = Arrays.asList(nasabahSiti, nasabahAhmad);
 
-        // Inisialisasi Dependency Inversion (Repository & Notifikasi)
-        TransaksiRepository repository = new MemoryTransaksiRepository();
-        NotifikasiService notifikasi = (telepon, pesan) ->
-                System.out.println("[NOTIFIKASI SMS/WA ke " + telepon + "]: " + pesan);
+        demoSetoranDanGalat(service, cli, unitRT, petugasBudi, nasabahSiti, nasabahAhmad);
+        demoPencairanDanDataHilang(service, nasabahSiti);
+        cetakLaporanAkhir(cli, daftarNasabah, unitRT.getDaftarPetugas());
 
-        BankSampahService service = new BankSampahService(repository, notifikasi);
-        BankSampahCLI cli = new BankSampahCLI(service, unitRT);
+        cekModeInteraktif(args, cli, daftarNasabah);
+    }
 
-        cli.cetakBanner();
-        cli.tampilkanKatalog();
+    private static void demoImporKatalog(KatalogService katalogService,
+                                         Repository<KategoriSampah, String> kategoriRepo,
+                                         BankSampahUnit unitRT) {
+        Path csvPath = Path.of("ecotrash/data/katalog.csv");
+        if (!Files.exists(csvPath)) {
+            csvPath = Path.of("data/katalog.csv");
+        }
+        try {
+            KatalogService.HasilImpor hasil = katalogService.imporCsv(csvPath);
+            for (KategoriSampah k : kategoriRepo.semua()) {
+                unitRT.tambahKategori(k);
+            }
+            System.out.println("\n[IMPOR CSV KATALOG] Berhasil: " + hasil.getBerhasil()
+                    + ", galat baris: " + hasil.getGalat());
+        } catch (IOException e) {
+            System.out.println("[PERINGATAN] Gagal membaca CSV (" + e.getMessage() + "), memakai katalog bawaan.");
+            unitRT.tambahKategori(new SampahAnorganik("SMP01", "Botol Plastik PET Bening", 4500, "Grade A"));
+            unitRT.tambahKategori(new SampahAnorganik("SMP02", "Kardus Bekas / Box Cokelat", 2500, "Grade A"));
+            unitRT.tambahKategori(new SampahAnorganik("SMP03", "Kaleng Minuman Aluminium", 12000, "Grade A"));
+            unitRT.tambahKategori(new MinyakJelantah("SMP04", 6500, 1.2));
+        }
+    }
 
-        // SIMULASI FITUR 1: Penimbangan & Setoran Sampah Polimorfis
-        System.out.println("\n>>> [DEMO FITUR 1] PENIMBANGAN & SETORAN SAMPAH");
+    private static void demoSetoranDanGalat(BankSampahService service, BankSampahCLI cli,
+                                            BankSampahUnit unitRT, PetugasBankSampah petugas,
+                                            NasabahWarga siti, NasabahWarga ahmad) {
+        System.out.println("\n>>> [DEMO FITUR 1] PENIMBANGAN, SETORAN & PENANGANAN GALAT");
+        try {
+            KategoriSampah botol = unitRT.cariKategori("SMP01").orElseThrow();
+            KategoriSampah kardus = unitRT.cariKategori("SMP02").orElseThrow();
+            KategoriSampah aluminium = unitRT.cariKategori("SMP03").orElseThrow();
+            KategoriSampah jelantah = unitRT.cariKategori("SMP04").orElseThrow();
 
-        // Transaksi 1: Nasabah Ibu Siti menyetor botol & kardus (Skema Tabungan Rupiah)
-        TransaksiSetoran tx1 = new TransaksiSetoran("TRX-2026-001", nasabahSiti, LocalDate.now());
-        tx1.tambahItem(botolPlastik, 4.5, "Botol bersih tanpa label");
-        tx1.tambahItem(kardus, 6.0, "Kardus lipat rapi");
+            TransaksiSetoran tx1 = new TransaksiSetoran("TRX-2026-001", siti, LocalDate.now());
+            tx1.tambahItem(botol, 2.0, "Setoran awal");
+            tx1.tambahItem(botol, 2.5, "Tambahan botol bersih");
+            tx1.tambahItem(kardus, 6.0, "Kardus lipat rapi");
+            service.prosesSetoran(tx1, new RewardTabunganRupiah(), petugas);
+            cli.cetakSlipSetoran(tx1);
 
-        SkemaReward rewardRupiah = new RewardTabunganRupiah();
-        service.prosesSetoran(tx1, rewardRupiah, petugasBudi);
-        cli.cetakSlipSetoran(tx1);
-        System.out.printf("Saldo Tabungan Kas Ibu Siti: Rp %,.2f\n", nasabahSiti.getSaldoTabungan());
+            TransaksiSetoran tx2 = new TransaksiSetoran("TRX-2026-002", ahmad, LocalDate.now());
+            tx2.tambahItem(aluminium, 2.0, "Kaleng aluminium bersih");
+            tx2.tambahItem(jelantah, 4.0, "Minyak jelantah saring");
+            service.prosesSetoran(tx2, new RewardPoinSembako(), petugas);
+            cli.cetakSlipSetoran(tx2);
+        } catch (TransaksiTidakValidException e) {
+            System.out.println("Ditangani: " + e.getMessage());
+        }
 
-        // Transaksi 2: Nasabah Pak Ahmad menyetor aluminium & jelantah (Skema Poin Sembako)
-        TransaksiSetoran tx2 = new TransaksiSetoran("TRX-2026-002", nasabahAhmad, LocalDate.now());
-        tx2.tambahItem(kalengAluminium, 2.0, "Kaleng aluminium bersih");
-        tx2.tambahItem(jelantah, 4.0, "Minyak jelantah saring");
+        // Demo setoran kosong -> ditangkap oleh TransaksiTidakValidException
+        try {
+            TransaksiSetoran txKosong = new TransaksiSetoran("TRX-2026-ERR", siti, LocalDate.now());
+            service.prosesSetoran(txKosong, new RewardTabunganRupiah(), petugas);
+        } catch (TransaksiTidakValidException e) {
+            System.out.println("Ditangani (Setoran Kosong): " + e.getMessage());
+        }
+    }
 
-        SkemaReward rewardSembako = new RewardPoinSembako();
-        service.prosesSetoran(tx2, rewardSembako, petugasBudi);
-        cli.cetakSlipSetoran(tx2);
-        System.out.printf("Poin Belanja Sembako Pak Ahmad: %d Poin\n", nasabahAhmad.getPoinReward());
+    private static void demoPencairanDanDataHilang(BankSampahService service, NasabahWarga siti) {
+        System.out.println("\n>>> [DEMO FITUR 2] PENCAIRAN SALDO KAS & DATA TIDAK DITEMUKAN");
+        try {
+            service.cairkanSaldoNasabah(siti, 20000.0);
+            System.out.printf("[BERHASIL] Pencairan Rp 20.000 disetujui. Sisa saldo: Rp %,.2f\n",
+                    siti.getSaldoTabungan());
+        } catch (SaldoTidakCukupException e) {
+            System.out.println("Ditangani: " + e.getMessage());
+        }
 
-        // SIMULASI FITUR 2: Pencairan Saldo Kas Tunai Nasabah
-        System.out.println("\n>>> [DEMO FITUR 2] PENCAIRAN SALDO KAS TUNAI NASABAH");
+        try {
+            service.cairkanSaldoNasabah(siti, 50000.0);
+        } catch (SaldoTidakCukupException e) {
+            System.out.printf("Ditangani (Saldo Kurang): %s | Kekurangan: Rp %,.0f\n",
+                    e.getMessage(), e.getKekurangan());
+        }
 
-        // Skenario 2A (Berhasil): Ibu Siti mencairkan Rp 20.000 dari total saldo Rp 35.250
-        System.out.println("\n[Skenario 2A: Pencairan Berhasil]");
-        System.out.printf("Saldo awal Ibu Siti: Rp %,.2f\n", nasabahSiti.getSaldoTabungan());
-        System.out.println("Memproses penarikan kas tunai sebesar Rp 20.000...");
-        boolean statusCair1 = service.cairkanSaldoNasabah(nasabahSiti, 20000.0);
-        System.out.println("Status Pencairan : " + (statusCair1 ? "BERHASIL (Uang Tunai Diserahkan)" : "GAGAL"));
-        System.out.printf("Sisa Saldo Kas   : Rp %,.2f\n", nasabahSiti.getSaldoTabungan());
+        try {
+            service.ambilTransaksi("TRX-999");
+        } catch (DataTidakDitemukanException e) {
+            System.out.println("Ditangani (Data Hilang): " + e.getMessage());
+        }
+    }
 
-        // Skenario 2B (Gagal): Ibu Siti mencoba mencairkan Rp 50.000 (saldo hanya tersisa Rp 15.250)
-        System.out.println("\n[Skenario 2B: Pencairan Ditolak (Saldo Kurang)]");
-        System.out.printf("Saldo saat ini: Rp %,.2f\n", nasabahSiti.getSaldoTabungan());
-        System.out.println("Mencoba penarikan kas tunai sebesar Rp 50.000...");
-        boolean statusCair2 = service.cairkanSaldoNasabah(nasabahSiti, 50000.0);
-        System.out.println("Status Pencairan : " + (statusCair2 ? "BERHASIL" : "GAGAL DITOLAK (Saldo Tabungan Tidak Mencukupi)"));
-        System.out.printf("Saldo Kas Tetap  : Rp %,.2f\n", nasabahSiti.getSaldoTabungan());
-
-        // Rekapitulasi Akhir
+    private static void cetakLaporanAkhir(BankSampahCLI cli, List<NasabahWarga> nasabah,
+                                          List<PetugasBankSampah> petugas) {
         cli.tampilkanRekapitulasi();
+        cli.cetakDaftarPengguna(nasabah);
+        cli.cetakDaftarPengguna(petugas);
+    }
 
-        // Opsi Menu Interaktif bila dipanggil dengan argumen --interactive
+    private static void cekModeInteraktif(String[] args, BankSampahCLI cli,
+                                          List<NasabahWarga> daftarNasabah) {
         for (String arg : args) {
             if ("--interactive".equalsIgnoreCase(arg) || "-i".equalsIgnoreCase(arg)) {
                 Scanner scanner = new Scanner(System.in);
@@ -117,7 +162,6 @@ public class App {
                 return;
             }
         }
-
-        System.out.println("[PETUNJUK] Jalankan dengan argumen '--interactive' untuk membuka menu loket interaktif.");
+        System.out.println("\n[PETUNJUK] Jalankan dengan argumen '--interactive' untuk menu loket interaktif.");
     }
 }
